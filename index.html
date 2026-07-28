@@ -1,0 +1,1256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UDM 2.0 — Location Onboarding & Offboarding — Standard Prototype</title>
+<style>
+/* ===== ExxonMobil "Standard" (Unity) tokens ===== */
+:root{
+  --blue:#0c69b0; --blue-dark:#0a5590; --blue-ghost:#e4eef6;
+  --red:#b12a2a; --red-ghost:#f7e4e1;
+  --ink:#111111; --muted:#63666a; --line:#d0d3d4; --field-border:#b0bcc4;
+  --bg:#ffffff; --subtle:#f4f6f7; --stripe:#f7f9fa;
+  --green:#107b57; --green-ghost:#e7f1ec; --amber:#8a6d1f; --amber-ghost:#f6eedd;
+  --nav:#111820;
+  --font:"EMprint","Interstate",Arial,Helvetica,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--subtle);font-family:var(--font);color:var(--ink);font-size:14px;line-height:1.4}
+a{color:var(--blue);text-decoration:none}
+.hidden{display:none!important}
+
+/* ===== Standard HorizontalHeader (em-c-header) — light masthead; logo lives in footer per Standard ===== */
+.em-c-header{background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 24px;height:64px;position:sticky;top:0;z-index:20}
+.em-c-header__title{color:var(--ink);font-weight:700;font-size:15px;padding-right:22px;margin-right:6px;border-right:1px solid var(--line)}
+.em-c-primary-nav{display:flex;align-items:stretch;margin-left:20px;height:100%}
+.em-c-primary-nav__link{display:flex;align-items:center;padding:0 16px;color:var(--muted);font-size:13.5px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent}
+.em-c-primary-nav__link:hover{color:var(--ink)}
+.em-c-primary-nav__link.on{color:var(--blue);border-bottom-color:var(--blue)}
+.em-c-header__spacer{flex:1}
+.em-c-header__user{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px}
+.em-c-header__user .av{width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+
+/* ===== layout ===== */
+.stage{padding:26px 34px;max-width:1440px;margin:0 auto;min-height:calc(100vh - 64px - 92px)}
+
+/* ===== Standard Footer (condensed, dark) ===== */
+.em-c-footer{background:#fff;border-top:1px solid var(--line);color:var(--muted);margin-top:36px}
+.em-c-footer__inner{display:flex;align-items:center;gap:24px;padding:18px 34px;width:100%;box-sizing:border-box}
+.em-c-footer__inner svg{height:24px;width:auto}
+.em-c-footer__item{color:var(--muted);font-size:12px}
+.em-c-footer__item a,a.em-c-footer__item{color:var(--blue);text-decoration:underline}
+.em-c-footer__spacer{flex:1}
+
+/* ===== page header ===== */
+.crumb{color:var(--muted);font-size:12px;margin-bottom:8px}
+.crumb b{color:var(--ink)}
+.page-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px}
+.page-head h1{font-size:24px;margin:0} .page-head .sub{color:var(--muted);font-size:13px;margin-top:3px}
+.page-head .actions{margin-left:auto;display:flex;gap:10px}
+
+/* ===== buttons (em-c-btn) ===== */
+.em-c-btn{display:inline-flex;align-items:center;gap:7px;font-family:inherit;font-size:14px;font-weight:600;
+  padding:9px 18px;border-radius:2px;border:1px solid transparent;cursor:pointer;background:none;line-height:1;white-space:nowrap}
+.em-c-btn--primary{background:var(--blue);color:#fff}
+.em-c-btn--primary:hover{background:var(--blue-dark)}
+.em-c-btn--secondary{background:#fff;color:var(--blue);border-color:var(--blue)}
+.em-c-btn--secondary:hover{background:var(--blue-ghost)}
+.em-c-btn--tertiary{background:#fff;color:var(--muted);border-color:var(--field-border)}
+.em-c-btn--tertiary:hover{border-color:var(--muted)}
+.em-c-btn--bare{color:var(--blue);padding:9px 6px}
+.em-c-btn--bare:hover{text-decoration:underline}
+.em-c-btn--inverted-red{background:var(--red);color:#fff}
+.em-c-btn--inverted-red:hover{filter:brightness(.92)}
+.em-c-btn--small{padding:6px 12px;font-size:12.5px}
+.em-c-btn[disabled]{opacity:.45;cursor:not-allowed}
+
+/* ===== toolbar / search ===== */
+.em-c-toolbar{background:#fff;border:1px solid var(--line);border-radius:3px;padding:12px 14px;display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.em-c-search{flex:1;min-width:260px;display:flex;align-items:center;gap:8px;border:1px solid var(--field-border);border-radius:2px;padding:8px 10px;color:var(--muted);background:#fff}
+.em-c-search input{border:none;outline:none;font:inherit;font-size:13px;flex:1;color:var(--ink)}
+.toolbar-select{border:1px solid var(--field-border);border-radius:2px;padding:8px 10px;font:inherit;font-size:13px;background:#fff;color:var(--ink)}
+
+/* ===== tabs ===== */
+.em-c-tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:0}
+.em-c-tabs button{font:inherit;font-size:14px;font-weight:600;color:var(--muted);background:none;border:none;
+  padding:12px 20px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px}
+.em-c-tabs button.em-is-active{color:var(--blue);border-bottom-color:var(--blue)}
+.em-c-tabs button:hover{color:var(--ink)}
+
+/* ===== tables (em-c-table) — Standard: light header + bottom rule ===== */
+.em-c-table-object{background:#fff;border:1px solid var(--line);border-top:none}
+.em-c-table{width:100%;border-collapse:collapse;font-size:13px}
+.em-c-table th{text-align:left;font-weight:700;color:var(--ink);background:#fff;
+  border-bottom:2px solid var(--field-border);padding:11px 12px;white-space:nowrap}
+.em-c-table td{border-bottom:1px solid var(--line);padding:10px 12px;color:var(--ink);vertical-align:middle}
+.em-c-table--striped tbody tr:nth-child(even){background:var(--stripe)}
+.em-c-table tbody tr.clickable{cursor:pointer}
+.em-c-table tbody tr.clickable:hover{background:var(--blue-ghost)}
+.table-foot{padding:10px 12px;color:var(--muted);font-size:12px;background:#fff;border:1px solid var(--line);border-top:none}
+
+/* ===== pills ===== */
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:11px;border:1px solid}
+.pill.active{color:var(--green);background:var(--green-ghost);border-color:var(--green)}
+.pill.proposed{color:var(--blue);background:var(--blue-ghost);border-color:var(--blue)}
+.pill.approved{color:#5B4FC0;background:#ECEAFB;border-color:#5B4FC0}
+.pill.operational{color:#0B7285;background:#E3F2F4;border-color:#0B7285}
+.pill.offboarding{color:var(--amber);background:var(--amber-ghost);border-color:var(--amber)}
+.pill.historical{color:var(--muted);background:#eceef0;border-color:var(--muted)}
+.pill.blocked{color:var(--red);background:var(--red-ghost);border-color:var(--red)}
+.pill.pending{color:var(--muted);background:#eceef0;border-color:#b7c0c8}
+
+/* ===== fields (em-c-field) ===== */
+.em-c-field{margin-bottom:16px}
+.em-c-field__label{display:block;font-size:13px;color:var(--ink);margin-bottom:5px}
+.em-c-field__label .req{color:var(--red);font-weight:700;margin-left:2px}
+.em-c-input,.em-c-select,.em-c-textarea{width:100%;border:1px solid var(--field-border);border-radius:2px;
+  padding:9px 11px;font:inherit;font-size:13px;background:#fff;color:var(--ink)}
+.em-c-input::placeholder{color:#9aa4ac}
+.em-c-textarea{min-height:64px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 26px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 26px}
+.gridsearch{display:grid;grid-template-columns:1fr 1fr;gap:14px 26px}
+@media(max-width:700px){.gridsearch{grid-template-columns:1fr}}
+.em-c-field--checkbox{display:flex;align-items:center;gap:10px}
+.em-c-field--checkbox input{width:17px;height:17px;accent-color:var(--blue)}
+
+/* ===== card ===== */
+.card{background:#fff;border:1px solid var(--line);border-radius:3px;padding:0;margin-bottom:18px}
+.card__head{padding:14px 18px;border-bottom:1px solid var(--line);font-weight:700}
+.card__body{padding:18px}
+
+/* ===== summary strip ===== */
+.summary{display:flex;gap:0;background:#fff;border:1px solid var(--line);border-radius:3px;margin-bottom:18px}
+.summary .cell{flex:1;padding:14px 18px;border-right:1px solid var(--line)}
+.summary .cell:last-child{border-right:none}
+.summary .k{font-size:11px;color:var(--muted)} .summary .v{font-weight:700;font-size:14px;margin-top:3px}
+
+/* ===== wizard stepper ===== */
+.stepper{display:flex;gap:0;margin-bottom:22px}
+.stepper .st{display:flex;align-items:center;gap:10px;padding-right:34px;color:var(--muted)}
+.stepper .st .n{width:26px;height:26px;border-radius:50%;background:#c8cfd6;color:#fff;display:grid;place-items:center;font-weight:700;font-size:12px}
+.stepper .st.on .n{background:var(--blue)} .stepper .st.on{color:var(--ink);font-weight:700}
+.stepper .st.done .n{background:var(--green)}
+
+/* ===== checklist ===== */
+.ws{margin-bottom:18px}
+.ws h5{margin:0 0 8px;color:var(--blue-dark);font-size:13.5px;display:flex;align-items:center;gap:10px}
+.ck{display:flex;align-items:center;gap:12px;padding:7px 0}
+.ck .dot{width:18px;height:18px;border-radius:50%;background:#c8cfd6;flex-shrink:0;display:grid;place-items:center}
+.ck-check{display:inline-flex;align-items:center;flex-shrink:0}
+.ck-check svg{display:block}
+.ck.done .dot{background:var(--green)} .ck.blocked .dot{background:var(--red)}
+.ck .dot svg{width:11px;height:11px}
+.ck .lbl{flex:1;font-size:13px}
+.ck.pending .lbl{color:var(--muted)}
+.gaterail .g{display:flex;align-items:center;gap:12px;padding:6px 0}
+.gaterail .g .gn{width:22px;height:22px;border-radius:50%;background:#c8cfd6;color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+.gaterail .g.done .gn{background:var(--green)}
+.callout{border:1px solid var(--amber);background:var(--amber-ghost);border-radius:3px;padding:12px 14px;font-size:13px}
+.callout.red{border-color:var(--red);background:var(--red-ghost)}
+.note{color:var(--muted);font-size:12px;margin-top:8px}
+
+/* ===== footer ===== */
+
+.kpis{display:flex;gap:16px;margin-bottom:18px}
+.kpi{flex:1;background:#fff;border:1px solid var(--line);border-radius:3px;padding:16px 18px}
+.kpi .v{font-size:26px;font-weight:700} .kpi .k{color:var(--muted);font-size:12px;margin-top:4px}
+.chiprow{display:flex;gap:10px;margin-bottom:14px}
+.em-c-input:disabled,.em-c-select:disabled,.em-c-textarea:disabled{background:#f4f6f7;color:#63666a;cursor:not-allowed;border-color:#dfe3e6}
+.seg{display:inline-flex;border:1px solid var(--field-border);border-radius:4px;overflow:hidden}
+.seg-btn{font:inherit;font-size:12.5px;font-weight:600;padding:7px 14px;background:#fff;color:var(--muted);border:none;cursor:pointer}
+.seg-btn.on{background:var(--blue);color:#fff}
+.fr-chip{font-size:10px;font-weight:700;color:var(--blue);background:var(--blue-ghost);border:1px solid var(--blue);border-radius:3px;padding:1px 6px;margin-left:8px;vertical-align:middle}
+.section-h{font-size:13px;font-weight:700;color:var(--blue-dark);margin:6px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.reqsent.prog{background:var(--amber-ghost);color:var(--amber);border-color:var(--amber)}
+.reqsent{display:inline-flex;align-items:center;gap:8px;background:var(--green-ghost);color:var(--green);border:1px solid var(--green);border-radius:3px;padding:9px 14px;font-size:13px;font-weight:600;margin-bottom:6px}
+.task-note{background:var(--subtle);border:1px solid var(--line);border-radius:3px;padding:12px 14px;color:var(--muted);font-size:12.5px;margin-bottom:12px}
+.match-card{border:1px solid var(--blue);background:var(--blue-ghost);border-radius:3px;padding:14px 16px;margin:14px 0}
+
+/* ===== linked-entity picker (Site / Building) ===== */
+.link-row{display:flex;gap:10px;align-items:flex-end;margin-bottom:12px;flex-wrap:wrap}
+.link-row .em-c-field{flex:1;min-width:220px;margin-bottom:0}
+.linked-list{border:1px solid var(--line);border-radius:3px;overflow:hidden;margin-bottom:12px}
+.linked-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);background:#fff}
+.linked-item:last-child{border-bottom:none}
+.linked-item .ico{width:30px;height:30px;border-radius:4px;background:var(--blue-ghost);color:var(--blue);display:grid;place-items:center;flex-shrink:0;font-weight:700;font-size:13px}
+.linked-item .meta{flex:1}
+.linked-item .meta .t{font-weight:700;font-size:13px}
+.linked-item .meta .s{color:var(--muted);font-size:12px}
+.linked-empty{padding:16px;text-align:center;color:var(--muted);font-size:13px;border:1px dashed var(--line);border-radius:3px;margin-bottom:12px}
+
+/* ===== manage-location sub-tabs ===== */
+.mltab{font:inherit;font-size:13px;font-weight:600;color:var(--muted);background:#fff;border:1px solid var(--line);border-bottom:none;
+  padding:10px 16px;cursor:pointer;border-radius:3px 3px 0 0;margin-right:2px}
+.mltab.em-is-active{color:var(--blue);background:var(--blue-ghost);border-color:var(--blue)}
+.mltab:hover{color:var(--ink)}
+.mlsec{border-top-left-radius:0}
+
+/* ===== modal ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(17,17,17,.45);display:flex;align-items:flex-start;justify-content:center;z-index:100;padding:40px 20px;overflow:auto}
+.modal-overlay.hidden{display:none}
+.modal{background:#fff;border-radius:4px;max-width:640px;width:100%;box-shadow:0 12px 40px rgba(0,0,0,.25)}
+.modal__head{display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
+.modal__head h3{margin:0;font-size:17px;flex:1}
+.modal__close{background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;line-height:1;padding:4px}
+.modal__body{padding:20px}
+.modal__foot{display:flex;gap:10px;padding:14px 20px;border-top:1px solid var(--line);justify-content:flex-end}
+</style>
+</head>
+<body>
+
+<header class="em-c-header">
+    <div class="em-c-header__title">Unified Data Model 2.0</div>
+  <nav class="em-c-primary-nav">
+    <a class="em-c-primary-nav__link on" data-go="loc-initial">Locations</a>
+    <a class="em-c-primary-nav__link" data-go="approval-list">Approvals</a>
+    <a class="em-c-primary-nav__link" data-go="transaction-projects">Transaction projects</a>
+    <a class="em-c-primary-nav__link" data-go="source-system-relate">Source System Management</a>
+    <a class="em-c-primary-nav__link" data-go="metadata">Metadata</a>
+  </nav>
+  <div class="em-c-header__spacer"></div>
+  <div class="em-c-header__user"><span class="av">AS</span> A. Stern</div>
+</header>
+
+<main class="stage">
+
+  <!-- ============ 1. LOCATION INITIAL SCREEN ============ -->
+  <!-- ============ 1. LOCATIONS (tabs: Onboarding requests | All locations) ============ -->
+  <section class="screen" data-screen="loc-initial">
+    <div class="crumb">Home &rsaquo; <b>Locations</b></div>
+    <div class="page-head">
+      <div><h1>Locations</h1><div class="sub">Onboard or offboard a location, and manage an existing one</div></div>
+      <div class="actions">
+        <button class="em-c-btn em-c-btn--primary" data-go="onboarding-form">Location Request Form</button>
+        <button class="em-c-btn em-c-btn--primary" data-go="offboard-form">Offboard Location</button>
+      </div>
+    </div>
+
+    <div class="em-c-toolbar" id="loc-toolbar">
+      <div class="em-c-search">🔍 <input placeholder="Search location, site, address…"></div>
+      <select class="toolbar-select"><option>Status: All</option><option>Proposed</option><option>Approved</option><option>Active</option><option>Operational</option><option>Offboarding</option></select>
+      <select class="toolbar-select"><option>Business line: All</option><option>Chemicals</option><option>Fuels</option><option>Retail</option></select>
+      <select class="toolbar-select"><option>Country: All</option></select>
+      <div style="flex:1"></div>
+      <button class="em-c-btn em-c-btn--tertiary"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" style="margin-right:2px"><path d="M8 2v7m0 0l-3-3m3 3l3-3M3.5 13h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Export</button>
+    </div>
+
+    <div class="em-c-tabs">
+      <button class="tabbtn em-is-active" data-tab="tab-onb">Onboarding requests <span class="pill proposed" style="margin-left:6px">5</span></button>
+      <button class="tabbtn" data-tab="tab-off">Offboarding <span class="pill offboarding" style="margin-left:6px">3</span></button>
+      <button class="tabbtn" data-tab="tab-all">All locations <span class="pill pending" style="margin-left:6px">63k</span></button>
+    </div>
+
+    <!-- tab: onboarding requests -->
+    <div class="tabpane" id="tab-onb">
+      <div class="em-c-table-object"><table class="em-c-table em-c-table--striped em-c-table--condensed">
+        <thead><tr><th>Request</th><th>Location / address</th><th>Business line</th><th>Trigger</th><th>Submitted</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr class="clickable" onclick="viewReq('REQ-2043')"><td>REQ-2043</td><td>Baytown Annex — 5000 Bayway Dr</td><td>Chemicals</td><td>Footprint strategy</td><td>Jun 24</td><td><span class="pill proposed">In review</span></td></tr>
+          <tr class="clickable" onclick="viewReq('REQ-2041')"><td>REQ-2041</td><td>Pegasus Place Data Ctr, Dallas</td><td>Corporate</td><td>Acquisition</td><td>Jun 22</td><td><span class="pill approved">Approved</span></td></tr>
+          <tr class="clickable" onclick="viewReq('REQ-2039')"><td>REQ-2039</td><td>Fawley Terminal Office, UK</td><td>Fuels</td><td>Work-on-behalf</td><td>Jun 20</td><td><span class="pill blocked">Rejected</span></td></tr>
+          <tr class="clickable" onclick="viewReq('REQ-2038')"><td>REQ-2038</td><td>Joliet Retail 118, IL</td><td>Retail</td><td>Business-line handover</td><td>Jun 18</td><td><span class="pill proposed">In review</span></td></tr>
+          <tr class="clickable" onclick="viewReq('REQ-2035')"><td>REQ-2035</td><td>Singapore JV Lab</td><td>Chemicals</td><td>Footprint strategy</td><td>Jun 15</td><td><span class="pill approved">Approved</span></td></tr>
+        </tbody></table></div>
+      <div class="table-foot">5 of 42 onboarding requests · click a row to open the submitted request (with status)</div>
+    </div>
+
+    <!-- tab: offboarding -->
+    <div class="tabpane hidden" id="tab-off">
+      <div class="em-c-table-object"><table class="em-c-table em-c-table--striped em-c-table--condensed">
+        <thead><tr><th>Request</th><th>Location / address</th><th>Business line</th><th>Reason</th><th>Target exit</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr class="clickable" onclick="viewOff('TP-1990')"><td>TP-1990</td><td>Fawley Terminal Office, UK</td><td>Fuels</td><td>Lease expiry</td><td>Jul 21, 2026</td><td><span class="pill proposed">In review</span></td></tr>
+          <tr class="clickable" onclick="viewOff('TP-1984')"><td>TP-1984</td><td>York PA Bulk Plant</td><td>Fuels</td><td>Footprint strategy</td><td>Jun 30, 2026</td><td><span class="pill approved">Approved</span></td></tr>
+          <tr class="clickable" onclick="viewOff('TP-1978')"><td>TP-1978</td><td>Buenos Aires Office</td><td>Corporate</td><td>Divestment</td><td>Sep 22, 2026</td><td><span class="pill blocked">Rejected</span></td></tr>
+        </tbody></table></div>
+      <div class="table-foot">3 offboarding requests · click a row to open the submitted request (with status)</div>
+    </div>
+
+    <!-- tab: all locations -->
+    <div class="tabpane hidden" id="tab-all">
+      <div class="card" style="margin-bottom:16px"><div class="card__head">Search &amp; filter</div>
+        <div class="card__body">
+          <div class="gridsearch">
+            <div class="em-c-field" style="margin-bottom:0"><label class="em-c-field__label">Store number (SAP location code)</label><input class="em-c-input" id="lf-store" placeholder="e.g. 88231"></div>
+            <div class="em-c-field" style="margin-bottom:0"><label class="em-c-field__label">Name</label><input class="em-c-input" id="lf-name" placeholder="Location name…"></div>
+            <div class="em-c-field" style="margin-bottom:0"><label class="em-c-field__label">Street</label><input class="em-c-input" id="lf-street" placeholder="Street address…"></div>
+            <div class="em-c-field" style="margin-bottom:0"><label class="em-c-field__label">City</label><input class="em-c-input" id="lf-city" placeholder="City…"></div>
+            <div class="em-c-field" style="margin-bottom:0"><label class="em-c-field__label">Status</label>
+              <select class="em-c-select" id="lf-status">
+                <option value="">All statuses</option>
+                <option>Proposed</option><option>Approved</option><option>Active</option><option>Operational</option><option>Offboarding</option><option>Historical</option>
+              </select>
+            </div>
+            <div class="em-c-field" style="margin-bottom:0"><label class="em-c-field__label">Region</label>
+              <select class="em-c-select" id="lf-region">
+                <option value="">All regions</option>
+                <option>Americas</option><option>EMEA</option><option>APAC</option>
+              </select>
+            </div>
+            <div class="em-c-field" style="margin-bottom:0"><label class="em-c-field__label">Country</label>
+              <select class="em-c-select" id="lf-country">
+                <option value="">All countries</option>
+                <option>United States</option><option>United Kingdom</option><option>Singapore</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:14px;align-items:center">
+            <button class="em-c-btn em-c-btn--primary" onclick="doLocationSearch()">🔍 Search</button>
+            <button class="em-c-btn em-c-btn--tertiary" onclick="clearLocationSearch()">Clear</button>
+            <div style="flex:1"></div>
+            <span class="note" id="lf-result-note" style="margin:0"></span>
+            <button class="em-c-btn em-c-btn--tertiary"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" style="margin-right:2px"><path d="M8 2v7m0 0l-3-3m3 3l3-3M3.5 13h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Export</button>
+          </div>
+        </div>
+      </div>
+      <div class="em-c-table-object"><table class="em-c-table em-c-table--striped em-c-table--condensed">
+        <thead><tr><th>Location ID</th><th>Name</th><th>Store number</th><th>Site (GDW L6)</th><th>Country</th><th>Business line</th><th>Type</th><th>Status</th></tr></thead>
+        <tbody id="all-loc-tbody">
+          <tr class="clickable" onclick="viewLocation('LOC-88231')" data-store="88231" data-name="baytown annex" data-street="5000 bayway dr" data-city="baytown" data-status="proposed" data-region="americas" data-country="united states"><td>LOC-88231</td><td>Baytown Annex</td><td>88231</td><td>Baytown Complex</td><td>United States</td><td>Chemicals</td><td>Office</td><td><span class="pill proposed">Proposed</span></td></tr>
+          <tr class="clickable" onclick="viewLocation('LOC-77012')" data-store="77012" data-name="pearland field office" data-street="2200 industrial blvd" data-city="pearland" data-status="approved" data-region="americas" data-country="united states"><td>LOC-77012</td><td>Pearland Field Office</td><td>77012</td><td>Pearland</td><td>United States</td><td>Chemicals</td><td>Office</td><td><span class="pill approved">Approved</span></td></tr>
+          <tr class="clickable" onclick="viewLocation('LOC-55021')" data-store="55021" data-name="pegasus place data ctr" data-street="8500 pegasus way" data-city="dallas" data-status="active" data-region="americas" data-country="united states"><td>LOC-55021</td><td>Pegasus Place Data Ctr</td><td>55021</td><td>Dallas HQ</td><td>United States</td><td>Corporate</td><td>Data centre</td><td><span class="pill active">Active</span></td></tr>
+          <tr class="clickable" onclick="viewLocation('LOC-41002')" data-store="41002" data-name="fawley terminal office" data-street="marine parade" data-city="fawley" data-status="offboarding" data-region="emea" data-country="united kingdom"><td>LOC-41002</td><td>Fawley Terminal Office</td><td>41002</td><td>Fawley</td><td>United Kingdom</td><td>Fuels</td><td>Office</td><td><span class="pill offboarding">Offboarding</span></td></tr>
+          <tr class="clickable" onclick="viewLocation('LOC-33019')" data-store="33019" data-name="singapore jv lab" data-street="1 jurong innovation way" data-city="jurong" data-status="operational" data-region="apac" data-country="singapore"><td>LOC-33019</td><td>Singapore JV Lab</td><td>33019</td><td>Jurong</td><td>Singapore</td><td>Chemicals</td><td>Laboratory</td><td><span class="pill operational">Operational</span></td></tr>
+          <tr class="clickable" onclick="viewLocation('LOC-11902')" data-store="11902" data-name="york pa bulk plant" data-street="900 depot rd" data-city="york" data-status="historical" data-region="americas" data-country="united states"><td>LOC-11902</td><td>York PA Bulk Plant</td><td>11902</td><td>York</td><td>United States</td><td>Fuels</td><td>Bulk plant</td><td><span class="pill historical">Historical</span></td></tr>
+        </tbody></table></div>
+      <div class="table-foot">Showing 6 of 63,412 locations · a location moves to <b>Operational</b> once its site/building is created in Nuvolo · click a row to open the record</div>
+    </div>
+  </section>
+
+  <!-- ============ 1c. TRANSACTION PROJECTS (list) ============ -->
+  <section class="screen hidden" data-screen="transaction-projects">
+    <div class="crumb">Home &rsaquo; <b>Transaction projects</b></div>
+    <div class="page-head"><div><h1>Transaction projects</h1><div class="sub">A location can have multiple transaction projects — onboarding, offboarding, lease start, lease end…</div></div></div>
+    <div class="em-c-toolbar">
+      <div class="em-c-search">🔍 <input placeholder="Search project, location…"></div>
+      <select class="toolbar-select"><option>Type: All</option><option>Onboarding</option><option>Offboarding</option><option>Lease start</option><option>Lease end</option></select>
+      <select class="toolbar-select"><option>Status: All</option><option>Proposed</option><option>Active</option><option>In closeout</option></select>
+      <select class="toolbar-select"><option>Business line: All</option></select>
+    </div>
+    <div class="em-c-table-object"><table class="em-c-table em-c-table--striped em-c-table--condensed">
+      <thead><tr><th>Project</th><th>Location</th><th>Type</th><th>Business line</th><th>Owner</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr class="clickable" data-go="transaction-project"><td>TP-2043</td><td>Baytown Annex</td><td>Onboarding</td><td>Chemicals</td><td>A. Stern</td><td><span class="pill proposed">Proposed</span></td></tr>
+        <tr class="clickable" data-go="transaction-project"><td>TP-2051</td><td>Baytown Annex</td><td>Lease start</td><td>Chemicals</td><td>A. Stern</td><td><span class="pill active">Active</span></td></tr>
+        <tr class="clickable" data-go="transaction-project"><td>TP-2041</td><td>Pegasus Place Data Ctr</td><td>Onboarding</td><td>Corporate</td><td>A. Stern</td><td><span class="pill active">Active</span></td></tr>
+        <tr class="clickable" data-go="offboarding-project"><td>TP-1990</td><td>Fawley Terminal Office</td><td>Offboarding</td><td>Fuels</td><td>J. Hamilton</td><td><span class="pill offboarding">In closeout</span></td></tr>
+        <tr class="clickable" data-go="transaction-project"><td>TP-1987</td><td>Fawley Terminal Office</td><td>Lease end</td><td>Fuels</td><td>J. Hamilton</td><td><span class="pill active">Active</span></td></tr>
+        <tr class="clickable" data-go="offboarding-project"><td>TP-1984</td><td>York PA Bulk Plant</td><td>Offboarding</td><td>Fuels</td><td>J. Hamilton</td><td><span class="pill offboarding">In closeout</span></td></tr>
+        <tr class="clickable" data-go="offboarding-project"><td>TP-1978</td><td>Buenos Aires Office</td><td>Offboarding</td><td>Corporate</td><td>A. Ohagan</td><td><span class="pill offboarding">In closeout</span></td></tr>
+      </tbody></table></div>
+    <div class="table-foot">7 of 45 transaction projects · one location can hold several · click a row to open the project</div>
+  </section>
+
+  <!-- ============ 2. ONBOARDING FORM (wizard w/ 3 steps) ============ -->
+  <section class="screen hidden" data-screen="onboarding-form">
+    <div class="crumb">Home &rsaquo; Onboarding requests &rsaquo; <b>REQ-2043 · request form</b></div>
+    <div class="page-head"><div><h1>Location onboarding request</h1></div>
+      <div class="actions"><button class="em-c-btn em-c-btn--bare" data-go="loc-initial">Cancel</button></div></div>
+
+    <div class="stepper">
+      <div class="st on" id="wstep0"><span class="n">1</span> Requestor &amp; location</div>
+      <div class="st" id="wstep1"><span class="n">2</span> Financials (Planning and Stewardship)</div>
+    </div>
+
+    <!-- step 1 -->
+    <div class="card wform" id="wf0"><div class="card__head">Requestor &amp; location details</div><div class="card__body">
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">Requestor<span class="req">*</span></label><input class="em-c-input" placeholder="Enter value…"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Type of location<span class="req">*</span></label><select class="em-c-select"><option>Please select a value…</option><option>Office</option><option>Terminal</option><option>Laboratory</option><option>Retail</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">Location name<span class="req">*</span></label><input class="em-c-input" placeholder="Enter value…"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Average monthly rent</label><input class="em-c-input" placeholder="Enter value…"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Lease start date</label><input class="em-c-input" placeholder="mm/dd/yyyy"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Lease end date</label><input class="em-c-input" placeholder="mm/dd/yyyy"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Country<span class="req">*</span></label><select class="em-c-select"><option>Please select a value…</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">State / Province</label><select class="em-c-select"><option>Please select a value…</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">City<span class="req">*</span></label><input class="em-c-input" placeholder="Enter value…"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Zip code</label><input class="em-c-input" placeholder="Enter value…"></div>
+      </div>
+      <div class="em-c-field"><label class="em-c-field__label">Street address<span class="req">*</span></label><textarea class="em-c-textarea"></textarea></div>
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">Primary use<span class="req">*</span></label><select class="em-c-select"><option>Please select a value…</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">Business line<span class="req">*</span></label><select class="em-c-select"><option>Please select a value…</option></select></div>
+      </div>
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">Space type<span class="req">*</span></label><select class="em-c-select"><option>Please select a value…</option><option>Office</option><option>Warehouse</option><option>Retail</option><option>Laboratory</option><option>Data centre</option><option>Land</option><option>Mixed use</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">Who will manage the site<span class="req">*</span></label><select class="em-c-select"><option>Please select a value…</option><option>E&PS</option><option>CBRE</option><option>Business line</option><option>Third-party MSP</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">Are we taking over the location from a business line?<span class="req">*</span></label><select class="em-c-select"><option>Please select a value…</option><option>No</option><option>Yes</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">Expected start date</label><input class="em-c-input" placeholder="mm/dd/yyyy"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Who is the Commercial Portfolio Manager?</label><input class="em-c-input" placeholder="Enter value…"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Who is the MSP Contact?</label><input class="em-c-input" placeholder="Enter value…"></div>
+        <div class="em-c-field"><label class="em-c-field__label">What is the estimated opex budget for the site?<span class="req">*</span></label><input class="em-c-input" placeholder="Enter value…"></div>
+      </div>
+      <div class="em-c-field"><label class="em-c-field__label">Business reason</label><textarea class="em-c-textarea" placeholder="Enter value…"></textarea></div>
+      <div class="em-c-field"><label class="em-c-field__label">Attachments</label><input class="em-c-input" type="file"></div>
+      <div class="em-c-field em-c-field--checkbox"><input type="checkbox"> <label class="em-c-field__label" style="margin:0">Joint venture</label></div>
+    </div></div>
+
+    <!-- step 2 -->
+    <div class="card wform hidden" id="wf1"><div class="card__head">Filled by Planning and Stewardship</div><div class="card__body">
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">OpEx facility company code</label><input class="em-c-input"></div>
+        <div class="em-c-field"><label class="em-c-field__label">OpEx facility cost center</label><input class="em-c-input"></div>
+        <div class="em-c-field"><label class="em-c-field__label">OpEx facility source system</label><input class="em-c-input"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Business area</label><input class="em-c-input"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Profit center</label><input class="em-c-input"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Plant code</label><input class="em-c-input"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Lease company code</label><input class="em-c-input"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Lease cost center</label><input class="em-c-input"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Business line allocation company code</label><input class="em-c-input"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Business allocation cost center</label><input class="em-c-input"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Lease source system</label><input class="em-c-input"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Alt fixed asset settlement cost center</label><input class="em-c-input"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Alt fixed asset settlement company code</label><input class="em-c-input"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Alt fixed asset settlement source system</label><input class="em-c-input"></div>
+      </div>
+    </div></div>
+
+    <!-- step 3 -->
+    <div style="display:flex;gap:10px">
+      <button class="em-c-btn em-c-btn--tertiary" id="wback" onclick="wprev()">‹ Back</button>
+      <div style="flex:1"></div>
+      <button class="em-c-btn em-c-btn--bare" data-go="loc-initial">Save draft</button>
+      <button class="em-c-btn em-c-btn--primary" id="wnext" onclick="wnext()">Next ›</button>
+    </div>
+  </section>
+
+  <!-- ============ 3. TRANSACTION PROJECT MANAGEMENT ============ -->
+  <section class="screen hidden" data-screen="transaction-project">
+    <div class="crumb">Home &rsaquo; Transaction projects &rsaquo; <b>TP-2043</b></div>
+    <div class="page-head">
+      <div style="display:flex;align-items:center;gap:14px"><h1>Baytown Annex — onboarding</h1></div>
+      <div class="actions"><button class="em-c-btn em-c-btn--secondary" data-go="transaction-projects">‹ Back</button><button class="em-c-btn em-c-btn--primary">Promote to Active</button></div>
+    </div>
+    <div class="summary">
+      <div class="cell"><div class="k">Project</div><div class="v">TP-2043</div></div>
+      <div class="cell"><div class="k">Trigger</div><div class="v">Footprint strategy</div></div>
+      <div class="cell"><div class="k">Business line</div><div class="v">Chemicals</div></div>
+      <div class="cell"><div class="k">Budget</div><div class="v">&gt; $1M (logged)</div></div>
+      <div class="cell"><div class="k">Owner</div><div class="v">A. Stern</div></div>
+    </div>
+    <div class="card" style="margin:0">
+      <div class="card__head">Tasks</div>
+        <div class="card__body">
+          <div class="ws"><h5>UDM</h5>
+            <div class="ck done"><span class="ck-check"><svg viewBox="0 0 16 16" width="18" height="18" fill="#107b57"><path d="M7.813,10.7a1.155,1.155,0,0,1-.82-.339L4.806,8.172l.707-.707L7.7,9.652a.16.16,0,0,0,.227,0l6.807-6.807.707.707L8.633,10.359A1.155,1.155,0,0,1,7.813,10.7Z"/><path d="M8.5,16A7.5,7.5,0,1,1,11.95,1.835l.444.23-.459.888-.444-.229a6.517,6.517,0,1,0,3.444,4.915l-.069-.5.991-.137.068.5A7.484,7.484,0,0,1,8.5,16Z"/></svg></span><span class="lbl">Configure site &amp; location in UDM</span><a class="em-c-btn em-c-btn--bare em-c-btn--small" onclick="openTask('internal')">Open</a></div>
+            <div class="ck done"><span class="ck-check"><svg viewBox="0 0 16 16" width="18" height="18" fill="#107b57"><path d="M7.813,10.7a1.155,1.155,0,0,1-.82-.339L4.806,8.172l.707-.707L7.7,9.652a.16.16,0,0,0,.227,0l6.807-6.807.707.707L8.633,10.359A1.155,1.155,0,0,1,7.813,10.7Z"/><path d="M8.5,16A7.5,7.5,0,1,1,11.95,1.835l.444.23-.459.888-.444-.229a6.517,6.517,0,1,0,3.444,4.915l-.069-.5.991-.137.068.5A7.484,7.484,0,0,1,8.5,16Z"/></svg></span><span class="lbl">Add site code (Genetec / occupancy)</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Monitor attendance data</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">SAP master data</span></div>
+          </div>
+          <div class="ws"><h5>Financials</h5>
+            <div class="ck done"><span class="ck-check"><svg viewBox="0 0 16 16" width="18" height="18" fill="#107b57"><path d="M7.813,10.7a1.155,1.155,0,0,1-.82-.339L4.806,8.172l.707-.707L7.7,9.652a.16.16,0,0,0,.227,0l6.807-6.807.707.707L8.633,10.359A1.155,1.155,0,0,1,7.813,10.7Z"/><path d="M8.5,16A7.5,7.5,0,1,1,11.95,1.835l.444.23-.459.888-.444-.229a6.517,6.517,0,1,0,3.444,4.915l-.069-.5.991-.137.068.5A7.484,7.484,0,0,1,8.5,16Z"/></svg></span><span class="lbl">Confirm budget classification (&gt; $1M → own L6 budget)</span></div>
+            <div class="ck done"><span class="ck-check"><svg viewBox="0 0 16 16" width="18" height="18" fill="#107b57"><path d="M7.813,10.7a1.155,1.155,0,0,1-.82-.339L4.806,8.172l.707-.707L7.7,9.652a.16.16,0,0,0,.227,0l6.807-6.807.707.707L8.633,10.359A1.155,1.155,0,0,1,7.813,10.7Z"/><path d="M8.5,16A7.5,7.5,0,1,1,11.95,1.835l.444.23-.459.888-.444-.229a6.517,6.517,0,1,0,3.444,4.915l-.069-.5.991-.137.068.5A7.484,7.484,0,0,1,8.5,16Z"/></svg></span><span class="lbl">Create cost centre in SAP</span><a class="em-c-btn em-c-btn--bare em-c-btn--small" onclick="openTask('request')">Open</a></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Link cost centre to UDM (hierarchy)</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Relate cost object (Source System)</span><a class="em-c-btn em-c-btn--bare em-c-btn--small" onclick="openTask('relate')">Open</a></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Set up occupancy allocation</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Set up capital allocation</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Configure planning hierarchy</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Confirm Workday hierarchy (if needed)</span></div>
+          </div>
+          <div class="ws"><h5>Space / FM</h5>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Set up buildings in UDM</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Link Nuvolo to UDM</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Configure site &amp; campus in Nuvolo</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Configure buildings in Nuvolo</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Set up ClearID</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Configure FindMe</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Configure Cisco Spaces</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Configure Hoteling — residential</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Set up assets in Nuvolo</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Set up preventative maintenance</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Set up corrective maintenance</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Configure work order management</span></div>
+          </div>
+          <div class="ws"><h5>Real Estate</h5>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Determine ownership / lease status</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Set up parcel (real estate interest) structure</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Link lease to source system</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">MapPlus (parcel) ID if owned in UDM</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Identify location cost-centre assets are connected to</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Update lease record in UDM / Connexion</span></div>
+            <div class="ck pending"><span class="dot"></span><span class="lbl">Send to lease administration</span></div>
+          </div>
+        </div>
+      </div>
+  </section>
+
+  <!-- ============ 4. CHECKLIST & TASKS ============ -->
+  <section class="screen hidden" data-screen="checklist">
+    <div class="crumb">Home &rsaquo; Transaction projects &rsaquo; TP-2043 &rsaquo; <b>Task detail</b></div>
+    <div class="page-head"><div style="display:flex;align-items:center;gap:12px"><h1 id="td-title">Task detail</h1><span class="pill proposed" id="td-status">In progress</span></div>
+      <div class="actions"><button class="em-c-btn em-c-btn--secondary" data-go="transaction-project">‹ Back</button></div></div>
+
+    <div class="card"><div class="card__body">
+      <div class="em-c-field__label" style="font-weight:700">What this task does</div>
+      <p id="td-desc" style="margin:6px 0 18px;color:var(--ink);font-size:13.5px;line-height:1.5">—</p>
+
+      <div id="td-action"></div>
+
+      <div style="display:flex;gap:10px;margin-top:22px;border-top:1px solid var(--line);padding-top:16px">
+        <button class="em-c-btn em-c-btn--secondary">Reassign</button>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- ============ 5. START OFFBOARDING (onclick target) ============ -->
+  <section class="screen hidden" data-screen="offboard-form">
+    <div class="crumb">Home &rsaquo; Offboarding &rsaquo; <b>Offboard location</b></div>
+    <div class="page-head"><div><h1>Offboard location</h1><div class="sub">Complete the offboarding request — on submit it is sent for offboarding approval</div></div>
+      <div class="actions"><button class="em-c-btn em-c-btn--bare" data-go="loc-initial">Cancel</button></div></div>
+
+    <div class="card"><div class="card__head">1 · Find the location</div><div class="card__body">
+      <div class="em-c-toolbar" style="margin:0">
+        <div class="em-c-search">🔍 <input placeholder="Search by name, ID or address…" value="Fawley Terminal Office"></div>
+        <select class="toolbar-select"><option>Country: United Kingdom</option></select>
+        <button class="em-c-btn em-c-btn--secondary">Search</button>
+      </div>
+      <div class="match-card">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div><b>Fawley Terminal Office</b> &nbsp;<span class="pill active">Active</span><div class="note" style="margin-top:4px">LOC-41002 · Fawley (GDW L6) · United Kingdom · Fuels · Office</div></div>
+          <div style="flex:1"></div>
+          <div style="text-align:right"><div class="note" style="margin:0">Lease SEQ-33019 · CBRE</div><div class="note" style="margin:0">Expiry Jul 21 (14 days)</div></div>
+        </div>
+      </div>
+    </div></div>
+
+    <div class="card"><div class="card__head">2 · Offboarding details</div><div class="card__body">
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">Reason<span class="req">*</span></label><select class="em-c-select"><option>Please select a value…</option><option>Lease expiry</option><option>Footprint strategy</option><option>Divestment</option><option>Business-line handover</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">Owned or leased<span class="req">*</span></label><select class="em-c-select"><option>Leased (NOSS closeout)</option><option>Owned (divestment)</option><option>Partial sell — continues</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">Target exit date</label><input class="em-c-input" placeholder="mm/dd/yyyy"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Commercial PM</label><select class="em-c-select"><option>J. Hamilton</option></select></div>
+      </div>
+      <div class="em-c-field"><label class="em-c-field__label">Business reason</label><textarea class="em-c-textarea"></textarea></div>
+    </div></div>
+
+    <div style="display:flex;gap:10px">
+      <div style="flex:1"></div>
+      <button class="em-c-btn em-c-btn--bare" data-go="loc-initial">Cancel</button>
+      <button class="em-c-btn em-c-btn--primary" data-go="approval-offboarding">Submit for approval ›</button>
+    </div>
+  </section>
+
+  <!-- ============ 6. OFFBOARDING GATED CLOSEOUT ============ -->
+  <section class="screen hidden" data-screen="offboarding-project">
+    <div class="crumb">Home &rsaquo; Transaction projects &rsaquo; <b>TP-1990 · Offboarding</b></div>
+    <div class="page-head"><div style="display:flex;align-items:center;gap:12px"><h1>Transaction project — Fawley Terminal Office — Offboarding</h1><span class="pill offboarding">In closeout</span></div>
+      <div class="actions"><button class="em-c-btn em-c-btn--secondary" data-go="transaction-projects">‹ Back</button><button class="em-c-btn em-c-btn--inverted-red">Complete closeout</button></div></div>
+    <div class="card" style="margin:0"><div class="card__head">Closeout tasks</div><div class="card__body">
+        <div class="ck done"><span class="ck-check"><svg viewBox="0 0 16 16" width="18" height="18" fill="#107b57"><path d="M7.813,10.7a1.155,1.155,0,0,1-.82-.339L4.806,8.172l.707-.707L7.7,9.652a.16.16,0,0,0,.227,0l6.807-6.807.707.707L8.633,10.359A1.155,1.155,0,0,1,7.813,10.7Z"/><path d="M8.5,16A7.5,7.5,0,1,1,11.95,1.835l.444.23-.459.888-.444-.229a6.517,6.517,0,1,0,3.444,4.915l-.069-.5.991-.137.068.5A7.484,7.484,0,0,1,8.5,16Z"/></svg></span><span class="lbl"><b>1 · Identify site for closeout</b></span><span class="pill active">Done</span></div>
+        <div class="ck done"><span class="ck-check"><svg viewBox="0 0 16 16" width="18" height="18" fill="#107b57"><path d="M7.813,10.7a1.155,1.155,0,0,1-.82-.339L4.806,8.172l.707-.707L7.7,9.652a.16.16,0,0,0,.227,0l6.807-6.807.707.707L8.633,10.359A1.155,1.155,0,0,1,7.813,10.7Z"/><path d="M8.5,16A7.5,7.5,0,1,1,11.95,1.835l.444.23-.459.888-.444-.229a6.517,6.517,0,1,0,3.444,4.915l-.069-.5.991-.137.068.5A7.484,7.484,0,0,1,8.5,16Z"/></svg></span><span class="lbl"><b>2 · Check for active lease</b></span><span class="pill active">Done</span></div>
+        <div class="ck pending"><span class="dot"></span><span class="lbl"><b>3 · Stop lease payments (SAP REFX)</b></span><span class="pill proposed">In progress</span></div>
+        <div class="ck pending"><span class="dot"></span><span class="lbl">4 · Block &amp; close accounting</span><span class="pill pending">Not started</span></div>
+        <div class="ck pending" style="padding-left:30px"><span class="dot" style="width:12px;height:12px"></span><span class="lbl" style="font-size:12.5px">Review cost centre structure (one-to-many)</span></div>
+        <div class="ck pending" style="padding-left:30px"><span class="dot" style="width:12px;height:12px"></span><span class="lbl" style="font-size:12.5px">Cost centre allocations</span></div>
+        <div class="ck pending" style="padding-left:30px"><span class="dot" style="width:12px;height:12px"></span><span class="lbl" style="font-size:12.5px">Refer to controllable cost budget process</span></div>
+        <div class="ck pending" style="padding-left:30px"><span class="dot" style="width:12px;height:12px"></span><span class="lbl" style="font-size:12.5px">Write-offs</span></div>
+        <div class="ck pending"><span class="dot"></span><span class="lbl">5 · Terminate vendor services</span><span class="pill pending">Not started</span></div>
+        <div class="ck pending"><span class="dot"></span><span class="lbl">6 · Update all systems (orchestrated)</span><span class="pill pending">Not started</span></div>
+        <div class="ck pending"><span class="dot"></span><span class="lbl">7 · Property location closeout — financial planning (OPEX considerations)</span><span class="pill pending">Not started</span></div>
+      </div></div>
+  </section>
+
+
+  <!-- ============ 8. SOURCE SYSTEM RELATE ============ -->
+  <section class="screen hidden" data-screen="source-system-relate">
+    <div class="crumb">Home &rsaquo; <b>Source System Management</b></div>
+    <div class="page-head"><div><h1>Source System Management</h1><div class="sub">Link the same physical asset (site, building, parcel, location) across external systems by matching their IDs</div></div>
+      <div class="actions"><button class="em-c-btn em-c-btn--primary">New relation</button></div></div>
+
+    <div class="card"><div class="card__head">Create relation</div><div class="card__body">
+      <div class="grid2" style="grid-template-columns:1fr 1fr 1fr;gap:0 16px">
+        <div class="em-c-field"><label class="em-c-field__label">Source System</label><select class="em-c-select"><option>Nuvolo</option><option>Sequentra</option><option>Siterra</option><option>SAP REFX</option><option>EPS360</option><option>GRDB</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">Source System Type</label><select class="em-c-select"><option>nuvolo_site_id</option><option>nuvolo_building_id</option><option>sap_contract_id</option><option>sequentra_lease_id</option><option>eps360_id</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">UDM 2.0 Source System Table Name</label><select class="em-c-select"><option>site</option><option>location</option><option>building</option><option>parcel</option><option>location_primary_use</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">UDM 2.0 ID</label><input class="em-c-input" value="SITE-2201"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Reference ID</label><input class="em-c-input" value="NUV-SITE-0098"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="em-c-btn em-c-btn--primary">Create relation</button>
+        <button class="em-c-btn em-c-btn--bare">Clear</button>
+      </div>
+    </div></div>
+
+  </section>
+
+  <!-- ============ 9. METADATA MANAGEMENT ============ -->
+  <section class="screen hidden" data-screen="metadata">
+    <div class="crumb">Home &rsaquo; <b>Metadata management</b></div>
+    <div class="page-head"><div><h1>Metadata management</h1><div class="sub">Create, update and retire values for every dimension table</div></div></div>
+    <div style="display:flex;gap:18px;align-items:flex-start">
+      <div class="card" style="width:270px;margin:0"><div class="card__head">Dimensions</div><div class="card__body" style="padding:6px 0">
+        <div style="padding:0">
+          <a style="display:block;padding:8px 18px;color:var(--ink)">Primary use (location)</a>
+          <a style="display:block;padding:8px 18px;color:var(--ink)">Operation status</a>
+          <a style="display:block;padding:8px 18px;color:var(--ink)">Building plan status</a>
+          <a style="display:block;padding:8px 18px;color:var(--ink)">Parcel type</a>
+          <a style="display:block;padding:8px 18px;color:var(--ink)">Lease group</a>
+          <a style="display:block;padding:8px 18px;background:var(--blue-ghost);color:var(--blue);font-weight:700;border-left:3px solid var(--blue)">Business line</a>
+          <a style="display:block;padding:8px 18px;color:var(--ink)">Segment</a>
+          <a style="display:block;padding:8px 18px;color:var(--ink)">Company</a>
+          <a style="display:block;padding:8px 18px;color:var(--ink)">Reporting unit</a>
+          <a style="display:block;padding:8px 18px;color:var(--ink)">Currency</a>
+          <a style="display:block;padding:8px 18px;color:var(--ink)">Unit of measure</a>
+          <a style="display:block;padding:8px 18px;color:var(--ink)">Fuel / store brand</a>
+        </div>
+      </div></div>
+      <div class="card" style="flex:1;margin:0"><div class="card__head" style="display:flex;align-items:center">Business line — values <div style="flex:1"></div><button class="em-c-btn em-c-btn--primary em-c-btn--small">Add value</button></div>
+        <div class="em-c-table-object" style="border:none"><table class="em-c-table em-c-table--striped em-c-table--condensed">
+          <thead><tr><th>Code</th><th>Description</th><th>Value chain</th><th>Active</th><th>Modified</th></tr></thead>
+          <tbody>
+            <tr><td>CHE</td><td>Chemicals</td><td>Chemicals</td><td><span class="pill active">Active</span></td><td>A. Stern · Jun 20</td></tr>
+            <tr><td>FUE</td><td>Fuels</td><td>Downstream</td><td><span class="pill active">Active</span></td><td>M. Merchant · Jun 18</td></tr>
+            <tr><td>COR</td><td>Corporate</td><td>Corporate</td><td><span class="pill active">Active</span></td><td>A. Stern · May 30</td></tr>
+            <tr><td>RET</td><td>Retail</td><td>Downstream</td><td><span class="pill active">Active</span></td><td>J. Martinez · May 22</td></tr>
+            <tr><td>UPS</td><td>Upstream</td><td>Upstream</td><td><span class="pill historical">Retired</span></td><td>A. Kishan · Apr 11</td></tr>
+          </tbody></table></div>
+        <div class="table-foot" style="border:none">5 values · database enforces unique code + NOT NULL description</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MANAGE LOCATION (create / manage) ============ -->
+  <section class="screen hidden" data-screen="manage-location">
+    <div class="crumb">Home &rsaquo; <a data-go="loc-initial">Locations</a> &rsaquo; <b id="ml-crumb">Location record</b></div>
+    <div class="page-head">
+      <div style="display:flex;align-items:center;gap:12px"><h1 id="ml-h1">Manage location — Baytown Annex</h1><span class="pill proposed" id="ml-pill">Proposed</span></div>
+      <div class="actions">
+        <button class="em-c-btn em-c-btn--secondary" data-go="loc-initial">‹ Back</button>
+      </div>
+    </div>
+
+    <div class="em-c-tabs" style="margin-bottom:18px">
+      <button class="mltab em-is-active" data-mlsec="ml-sec-identity">Identity &amp; address</button>
+      <button class="mltab" data-mlsec="ml-sec-class">Classification &amp; status</button>
+      <button class="mltab" data-mlsec="ml-sec-bl">Business line &amp; reporting</button>
+      <button class="mltab" data-mlsec="ml-sec-site">Site</button>
+      <button class="mltab" data-mlsec="ml-sec-bldg">Buildings</button>
+      <button class="mltab" data-mlsec="ml-sec-rei">Parcel</button>
+      <button class="mltab" data-mlsec="ml-sec-codes">Codes &amp; source systems</button>
+    </div>
+
+    <!-- ===== Identity & Address ===== -->
+    <div class="card mlsec" id="ml-sec-identity"><div class="card__body">
+      <div class="section-h">Identity</div>
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">Location ID (UDM)</label><input class="em-c-input" id="ml-locid" value="LOC-88231" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Is proposed (UDM)</label><input class="em-c-input" id="ml-isproposed" value="Yes" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Location name<span class="req">*</span> <span class="fr-chip">from request</span></label><input class="em-c-input ml-field" id="ml-name" value="Baytown Annex"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Location description</label><input class="em-c-input ml-field" id="ml-desc" value=""></div>
+      </div>
+      <div class="section-h">Address</div>
+      <div class="em-c-field"><label class="em-c-field__label">Street address 1<span class="req">*</span> <span class="fr-chip">from request</span></label><input class="em-c-input ml-field" id="ml-addr1" value="5000 Bayway Dr"></div>
+      <div class="em-c-field"><label class="em-c-field__label">Street address 2</label><input class="em-c-input ml-field" id="ml-addr2" value=""></div>
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">City<span class="req">*</span> <span class="fr-chip">from request</span></label><input class="em-c-input ml-field" id="ml-city" value="Baytown"></div>
+        <div class="em-c-field"><label class="em-c-field__label">State / Province <span class="fr-chip">from request</span></label><input class="em-c-input ml-field" id="ml-state" value="Texas"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Region</label><input class="em-c-input ml-field" id="ml-region" value=""></div>
+        <div class="em-c-field"><label class="em-c-field__label">Country <span class="fr-chip">from request</span></label><select class="em-c-select ml-field" id="ml-country"><option selected>United States</option><option>United Kingdom</option><option>Singapore</option><option>Argentina</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">Postal code / ZIP <span class="fr-chip">from request</span></label><input class="em-c-input ml-field" id="ml-postal" value="77520"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Latitude <span class="note" style="font-weight:400">— auto-populated</span></label><input class="em-c-input" id="ml-lat" value="" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Longitude <span class="note" style="font-weight:400">— auto-populated</span></label><input class="em-c-input" id="ml-long" value="" disabled></div>
+      </div>
+    </div></div>
+
+    <!-- ===== Classification & Status ===== -->
+    <div class="card mlsec hidden" id="ml-sec-class"><div class="card__body">
+      <div class="section-h">Classification &amp; status</div>
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">Location type<span class="req">*</span> <span class="fr-chip">from request</span></label><select class="em-c-select ml-field" id="ml-loctype"><option selected>Office</option><option>CORS – Company Owned Company Operated</option><option>CODO</option><option>COAG</option><option>Distributor</option><option>Terminal</option><option>Laboratory</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">Primary use / Service type<span class="req">*</span> <span class="fr-chip">from request</span></label><select class="em-c-select ml-field" id="ml-primaryuse"><option selected>Office</option><option>Chemical Plant</option><option>Bulk Plant/Depot</option><option>Laboratory</option><option>Terminal</option><option>Access Road</option><option>Commercial Sales</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">Status (operation status)</label><select class="em-c-select ml-field" id="ml-status"><option value=""></option><option>Proposed</option><option>Approved</option><option>Active</option><option>Non-Operating Surplus</option><option>Mothball</option><option>Divested</option><option>Historical</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">Location group <span class="note" style="font-weight:400">— Physical / Virtual, locked after creation</span></label><select class="em-c-select ml-field" id="ml-locgroup"><option value=""></option><option>Physical</option><option>Virtual</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">Gas brand</label><select class="em-c-select ml-field" id="ml-gasbrand"><option value=""></option><option>NA</option><option>Esso</option><option>Exxon</option><option>Feoso</option><option>General</option><option>Mobil</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">Store brand</label><select class="em-c-select ml-field" id="ml-storebrand"><option value=""></option><option>NA</option><option>On the Run</option><option>OTR</option><option>Mobil Mart</option><option>Exxon Shop</option><option>7-Eleven</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">Security option</label><select class="em-c-select ml-field" id="ml-security"><option value=""></option><option>Open Access</option><option>Business Improvement</option><option>Strategic Planning – General</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">Commercial PM</label><input class="em-c-input ml-field" id="ml-cpm" value=""></div>
+      </div>
+    </div></div>
+
+    <!-- ===== Business Line & Reporting ===== -->
+    <div class="card mlsec hidden" id="ml-sec-bl"><div class="card__body">
+      <div class="section-h">Business line &amp; reporting</div>
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">Business line<span class="req">*</span> <span class="fr-chip">from request</span></label><select class="em-c-select ml-field" id="ml-bl"><option selected>Chemicals</option><option>Corp</option><option>E_PS</option><option>EMIT</option><option>Foundation</option><option>Orphan</option><option>Procurement</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">Value chain</label><input class="em-c-input ml-field" id="ml-valuechain" value=""></div>
+        <div class="em-c-field"><label class="em-c-field__label">Business line report unit</label><input class="em-c-input ml-field" id="ml-blru" value=""></div>
+        <div class="em-c-field"><label class="em-c-field__label">Allocation % (BL reporting unit)</label><input class="em-c-input ml-field" id="ml-alloc" value="100%"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Reporting unit</label><input class="em-c-input ml-field" id="ml-ru" value=""></div>
+        <div class="em-c-field"><label class="em-c-field__label">Asset reporting unit</label><input class="em-c-input ml-field" id="ml-aru" value=""></div>
+      </div>
+      <div class="note">Allocation across business lines must total 100% before the location can be saved.</div>
+    </div></div>
+
+    <!-- ===== Site ===== -->
+    <div class="card mlsec hidden" id="ml-sec-site"><div class="card__body">
+      <div class="section-h">Site (GDW L6 money-stewardship grouping)</div>
+      <div id="ml-site-linked"></div>
+      <div class="link-row">
+        <div class="em-c-field"><label class="em-c-field__label">Add an existing site</label>
+          <select class="em-c-select ml-field" id="ml-site-picker">
+            <option value="">Select a site…</option>
+            <option>Baytown Complex</option><option>Pearland</option><option>Dallas HQ</option><option>Fawley</option><option>Jurong</option><option>York</option>
+          </select>
+        </div>
+        <button class="em-c-btn em-c-btn--secondary ml-field" id="ml-site-add" onclick="addExistingSite()">Add site</button>
+        <button class="em-c-btn em-c-btn--bare ml-field" id="ml-site-createlink" onclick="openSiteModal()">+ Can't find it? Create a new site</button>
+      </div>
+      <div class="grid2" id="ml-site-detail-fields">
+        <div class="em-c-field"><label class="em-c-field__label">Site code</label><input class="em-c-input ml-field" id="ml-sitecode" value=""></div>
+        <div class="em-c-field"><label class="em-c-field__label">Site name</label><input class="em-c-input ml-field" id="ml-sitename" value=""></div>
+        <div class="em-c-field"><label class="em-c-field__label">Site — primary use</label><select class="em-c-select ml-field" id="ml-siteuse"><option value=""></option><option>Office</option><option>Terminal</option><option>Laboratory</option><option>Retail</option><option>Data centre</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">Site — country</label><select class="em-c-select ml-field" id="ml-sitecountry"><option value=""></option><option>United States</option><option>United Kingdom</option><option>Singapore</option></select></div>
+        <div class="em-c-field"><label class="em-c-field__label">Site — source system</label><input class="em-c-input ml-field" id="ml-sitesrcsys" value=""></div>
+        <div class="em-c-field"><label class="em-c-field__label">Site — source system type</label><input class="em-c-input ml-field" id="ml-sitesrctype" value=""></div>
+        <div class="em-c-field"><label class="em-c-field__label">Site — source system reference ID</label><input class="em-c-input ml-field" id="ml-sitesrcref" value=""></div>
+      </div>
+    </div></div>
+
+    <!-- ===== Buildings ===== -->
+    <div class="card mlsec hidden" id="ml-sec-bldg"><div class="card__body">
+      <div class="section-h">Buildings</div>
+      <div id="ml-bldg-linked"></div>
+      <div class="link-row">
+        <div class="em-c-field"><label class="em-c-field__label">Add an existing building</label>
+          <select class="em-c-select ml-field" id="ml-bldg-picker">
+            <option value="">Select a building…</option>
+            <option>Baytown Complex — Bldg 4</option><option>Pearland — Main Office</option><option>Dallas HQ — Tower A</option><option>Fawley — Terminal Bldg</option><option>Jurong — Lab 2</option>
+          </select>
+        </div>
+        <button class="em-c-btn em-c-btn--secondary ml-field" id="ml-bldg-add" onclick="addExistingBuilding()">Add building</button>
+        <button class="em-c-btn em-c-btn--bare ml-field" id="ml-bldg-createlink" onclick="openBuildingModal()">+ Can't find it? Create a new building</button>
+      </div>
+      <div class="em-c-field"><label class="em-c-field__label">Timezone <span class="note" style="font-weight:400">— inherited from the primary linked building's Nuvolo record</span></label><input class="em-c-input" id="ml-bldg-timezone" value="" disabled></div>
+      <div class="note">Timezone is not entered directly on the Location — it comes from whichever building is linked above.</div>
+    </div></div>
+
+    <!-- ===== Parcel (formerly "Real Estate Interest" / REI in the legacy UDM schema) ===== -->
+    <div class="card mlsec hidden" id="ml-sec-rei"><div class="card__body">
+      <div class="section-h">Parcel <span class="note" style="font-weight:400">— new DB table is <code>parcel</code> (was called "Real Estate Interest" / REI in the legacy UDM schema). This is a lightweight capture at onboarding; full Parcel management is a separate, read-only + relate screen.</span></div>
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">Parcel name</label><input class="em-c-input ml-field" id="ml-reiname" value=""></div>
+        <div class="em-c-field"><label class="em-c-field__label">Parcel description</label><input class="em-c-input ml-field" id="ml-reidesc" value=""></div>
+        <div class="em-c-field"><label class="em-c-field__label">Area</label><input class="em-c-input ml-field" id="ml-reiarea" value=""></div>
+        <div class="em-c-field"><label class="em-c-field__label">Parcel interest type</label><select class="em-c-select ml-field" id="ml-reitype"><option value=""></option><option>Fee (owned)</option><option>Lease</option><option>Lease-out</option><option>DOSS</option></select></div>
+        <div class="em-c-field em-c-field--checkbox"><input type="checkbox" class="ml-field" id="ml-reiprimary"> <label class="em-c-field__label" style="margin:0">Primary parcel</label></div>
+        <div class="em-c-field"><label class="em-c-field__label">Parcel — latitude</label><input class="em-c-input ml-field" id="ml-reilat" value=""></div>
+        <div class="em-c-field"><label class="em-c-field__label">Parcel — longitude</label><input class="em-c-input ml-field" id="ml-reilong" value=""></div>
+      </div>
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">Parcel — source system</label><input class="em-c-input ml-field" id="ml-reisrcsys" value=""></div>
+        <div class="em-c-field"><label class="em-c-field__label">Parcel — source system type</label><input class="em-c-input ml-field" id="ml-reisrctype" value=""></div>
+        <div class="em-c-field"><label class="em-c-field__label">Parcel — source system reference ID</label><input class="em-c-input ml-field" id="ml-reisrcref" value=""></div>
+      </div>
+    </div></div>
+
+    <!-- ===== Codes & Source Systems ===== -->
+    <div class="card mlsec hidden" id="ml-sec-codes"><div class="card__body">
+      <div class="section-h">Codes &amp; source systems</div>
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">SAP location code (store number)</label><input class="em-c-input" id="ml-sapcode" value="" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Cost centre</label><input class="em-c-input" id="ml-costcenter" value="" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Cost object</label><input class="em-c-input" id="ml-costobj" value="" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Cost object type</label><input class="em-c-input" id="ml-costobjtype" value="" disabled></div>
+      </div>
+      <button class="em-c-btn em-c-btn--secondary" data-go="source-system-relate">Open Source System Management to relate these codes ›</button>
+    </div></div>
+
+    <div style="display:flex;gap:10px">
+      <div style="flex:1"></div>
+      <button class="em-c-btn em-c-btn--bare" data-go="loc-initial">Cancel</button>
+      <button class="em-c-btn em-c-btn--primary" id="ml-save">Save changes</button>
+    </div>
+  </section>
+
+
+  <!-- ============ APPROVALS (list) ============ -->
+  <section class="screen hidden" data-screen="approval-list">
+    <div class="crumb">Home &rsaquo; <b>Approvals</b></div>
+    <div class="page-head"><div><h1>Approvals</h1><div class="sub">Pending and recent approval requests across onboarding, offboarding and other changes</div></div></div>
+    <div class="em-c-toolbar">
+      <div class="em-c-search">🔍 <input placeholder="Search request, location…"></div>
+      <select class="toolbar-select"><option>Type: All</option><option>Onboarding</option><option>Offboarding</option><option>Lease start</option></select>
+      <select class="toolbar-select"><option>Status: All</option><option>Awaiting approval</option><option>Approved</option><option>Rejected</option></select>
+    </div>
+    <div class="em-c-table-object"><table class="em-c-table em-c-table--striped em-c-table--condensed">
+      <thead><tr><th>Request</th><th>Location</th><th>Type</th><th>Submitted</th><th>Requestor</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr class="clickable" data-go="approval-onboarding"><td>REQ-2043</td><td>Baytown Annex</td><td>Onboarding</td><td>Jun 24</td><td>A. Stern</td><td><span class="pill proposed">Awaiting approval</span></td></tr>
+        <tr class="clickable" data-go="approval-offboarding"><td>TP-1990</td><td>Fawley Terminal Office</td><td>Offboarding</td><td>Jun 20</td><td>A. Stern</td><td><span class="pill proposed">Awaiting approval</span></td></tr>
+        <tr class="clickable" data-go="approval-onboarding"><td>REQ-2038</td><td>Joliet Retail 118</td><td>Onboarding</td><td>Jun 18</td><td>S. Muteka</td><td><span class="pill proposed">Awaiting approval</span></td></tr>
+        <tr class="clickable" data-go="approval-onboarding"><td>TP-2051</td><td>Baytown Annex</td><td>Lease start</td><td>Jun 15</td><td>A. Stern</td><td><span class="pill proposed">Awaiting approval</span></td></tr>
+        <tr class="clickable" data-go="approval-onboarding"><td>REQ-2041</td><td>Pegasus Place Data Ctr</td><td>Onboarding</td><td>Jun 22</td><td>A. Stern</td><td><span class="pill approved">Approved</span></td></tr>
+        <tr class="clickable" data-go="approval-offboarding"><td>TP-1984</td><td>York PA Bulk Plant</td><td>Offboarding</td><td>Jun 18</td><td>J. Hamilton</td><td><span class="pill approved">Approved</span></td></tr>
+        <tr class="clickable" data-go="approval-offboarding"><td>TP-1978</td><td>Buenos Aires Office</td><td>Offboarding</td><td>Jun 12</td><td>A. Ohagan</td><td><span class="pill blocked">Rejected</span></td></tr>
+      </tbody></table></div>
+    <div class="table-foot">7 approval requests · click a row to open the approval</div>
+  </section>
+
+  <!-- ============ APPROVAL — LOCATION ONBOARDING ============ -->
+  <section class="screen hidden" data-screen="approval-onboarding">
+    <div class="crumb">Home &rsaquo; Onboarding requests &rsaquo; REQ-2043 &rsaquo; <b>Approval</b></div>
+    <div class="page-head"><div style="display:flex;align-items:center;gap:12px"><h1>Approval request — Location onboarding</h1><span class="pill proposed">Awaiting approval</span></div>
+      <div class="actions"><button class="em-c-btn em-c-btn--secondary" data-go="onboarding-form">‹ Back</button></div></div>
+
+    <div class="card"><div class="card__head">Request summary — REQ-2043</div><div class="card__body">
+      <div class="summary" style="margin:0">
+        <div class="cell"><div class="k">Location name</div><div class="v">Baytown Annex</div></div>
+        <div class="cell"><div class="k">Type</div><div class="v">Office</div></div>
+        <div class="cell"><div class="k">Business line</div><div class="v">Chemicals</div></div>
+        <div class="cell"><div class="k">Country / city</div><div class="v">United States · Baytown</div></div>
+        <div class="cell"><div class="k">Trigger</div><div class="v">Footprint strategy</div></div>
+        <div class="cell"><div class="k">Avg monthly rent</div><div class="v">$12,000</div></div>
+        <div class="cell"><div class="k">Requestor</div><div class="v">A. Stern</div></div>
+        <div class="cell"><div class="k">Budget</div><div class="v">&gt; $1M</div></div>
+      </div>
+    </div></div>
+
+    <div class="card"><div class="card__head">Approval decision</div><div class="card__body">
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">Approver</label><input class="em-c-input" value="Property Data Governance" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Decision date</label><input class="em-c-input" placeholder="mm/dd/yyyy"></div>
+      </div>
+      <div class="em-c-field"><label class="em-c-field__label">Comments</label><textarea class="em-c-textarea" placeholder="Optional note to the requestor…"></textarea></div>
+      <div class="note">On approval the location moves to <b>Approved</b>, its transaction project opens, and the location record becomes editable in Manage location.</div>
+    </div></div>
+
+    <div style="display:flex;gap:10px">
+      <div style="flex:1"></div>
+      <button class="em-c-btn em-c-btn--inverted-red" data-go="loc-initial">Reject</button>
+      <button class="em-c-btn em-c-btn--primary" data-go="transaction-project">Approve</button>
+    </div>
+  </section>
+
+  <!-- ============ APPROVAL — LOCATION OFFBOARDING (with pre-condition checks) ============ -->
+  <section class="screen hidden" data-screen="approval-offboarding">
+    <div class="crumb">Home &rsaquo; Offboarding &rsaquo; Fawley Terminal Office &rsaquo; <b>Approval</b></div>
+    <div class="page-head"><div style="display:flex;align-items:center;gap:12px"><h1>Approval request — Location offboarding</h1><span class="pill offboarding">Awaiting approval</span></div>
+      <div class="actions"><button class="em-c-btn em-c-btn--secondary" data-go="offboard-form">‹ Back</button></div></div>
+
+    <div class="card"><div class="card__head">Offboarding summary — Fawley Terminal Office</div><div class="card__body">
+      <div class="summary" style="margin:0">
+        <div class="cell"><div class="k">Location</div><div class="v">LOC-41002 · Fawley</div></div>
+        <div class="cell"><div class="k">Reason</div><div class="v">Lease expiry</div></div>
+        <div class="cell"><div class="k">Owned / leased</div><div class="v">Leased (CBRE)</div></div>
+        <div class="cell"><div class="k">Business line</div><div class="v">Fuels</div></div>
+        <div class="cell"><div class="k">Target exit</div><div class="v">Jul 21, 2026</div></div>
+        <div class="cell"><div class="k">Commercial PM</div><div class="v">J. Hamilton</div></div>
+      </div>
+    </div></div>
+
+
+    <div class="card"><div class="card__head">Approval decision</div><div class="card__body">
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">Approver</label><input class="em-c-input" value="Property Data Governance" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Decision date</label><input class="em-c-input" placeholder="mm/dd/yyyy"></div>
+      </div>
+      <div class="em-c-field"><label class="em-c-field__label">Comments</label><textarea class="em-c-textarea"></textarea></div>
+    </div></div>
+
+    <div style="display:flex;gap:10px">
+      <div style="flex:1"></div>
+      <button class="em-c-btn em-c-btn--inverted-red" data-go="loc-initial">Reject</button>
+      <button class="em-c-btn em-c-btn--primary" data-go="offboarding-project">Approve</button>
+    </div>
+  </section>
+
+
+  <!-- ============ SUBMITTED ONBOARDING REQUEST (read-only + status) ============ -->
+  <section class="screen hidden" data-screen="request-view">
+    <div class="crumb">Home &rsaquo; Onboarding requests &rsaquo; <b id="rv-crumb">REQ-2043</b></div>
+    <div class="page-head"><div style="display:flex;align-items:center;gap:12px"><h1 id="rv-title">Location onboarding request — Baytown Annex</h1><span class="pill proposed" id="rv-status">In review</span></div>
+      <div class="actions"><button class="em-c-btn em-c-btn--secondary" data-go="loc-initial">‹ Back</button><button class="em-c-btn em-c-btn--primary" id="rv-approve" data-go="approval-onboarding">Open approval →</button></div></div>
+
+    <div class="callout" id="rv-decision" style="display:none;margin-bottom:16px"></div>
+
+    <div class="card"><div class="card__head">Submitted request · Requestor &amp; location</div><div class="card__body">
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">Requestor</label><input class="em-c-input" value="A. Stern" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Type of location</label><input class="em-c-input" id="rv-type" value="Office" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Location name</label><input class="em-c-input" id="rv-name" value="Baytown Annex" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Average monthly rent</label><input class="em-c-input" id="rv-rent" value="$12,000" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Lease start date</label><input class="em-c-input" value="01/01/2026" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Lease end date</label><input class="em-c-input" value="12/31/2030" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Country</label><input class="em-c-input" id="rv-country" value="United States" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">State / Province</label><input class="em-c-input" value="Texas" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">City</label><input class="em-c-input" id="rv-city" value="Baytown" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Zip code</label><input class="em-c-input" value="77520" disabled></div>
+      </div>
+      <div class="em-c-field"><label class="em-c-field__label">Street address</label><textarea class="em-c-textarea" disabled>5000 Bayway Dr</textarea></div>
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">Primary use</label><input class="em-c-input" id="rv-use" value="Office" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Business line</label><input class="em-c-input" id="rv-bl" value="Chemicals" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Trigger</label><input class="em-c-input" id="rv-trigger" value="Footprint strategy" disabled></div>
+      </div>
+      <div class="em-c-field em-c-field--checkbox"><input type="checkbox" disabled> <label class="em-c-field__label" style="margin:0">Joint venture</label></div>
+    </div></div>
+
+    <div class="card"><div class="card__head">Financials (Planning and Stewardship)</div><div class="card__body">
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">OpEx facility company code</label><input class="em-c-input" value="1000" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">OpEx facility cost center</label><input class="em-c-input" value="CC-4471-BAYTOWN" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">OpEx facility source system</label><input class="em-c-input" value="SAP S/4" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Business area</label><input class="em-c-input" value="BA-CHEM" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Profit center</label><input class="em-c-input" value="PC-2043" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Plant code</label><input class="em-c-input" value="PL-77" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Lease company code</label><input class="em-c-input" value="1000" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Lease cost center</label><input class="em-c-input" value="CC-4471-LSE" disabled></div>
+      </div>
+    </div></div>
+  </section>
+
+
+  <!-- ============ SUBMITTED OFFBOARDING REQUEST (read-only + status) ============ -->
+  <section class="screen hidden" data-screen="offboard-view">
+    <div class="crumb">Home &rsaquo; Offboarding &rsaquo; <b id="ov-crumb">TP-1990</b></div>
+    <div class="page-head"><div style="display:flex;align-items:center;gap:12px"><h1 id="ov-title">Location offboarding request — Fawley Terminal Office</h1><span class="pill proposed" id="ov-status">In review</span></div>
+      <div class="actions"><button class="em-c-btn em-c-btn--secondary" data-go="loc-initial">‹ Back</button><button class="em-c-btn em-c-btn--primary" id="ov-approve" data-go="approval-offboarding">Open approval →</button></div></div>
+
+    <div class="callout" id="ov-decision" style="display:none;margin-bottom:16px"></div>
+
+    <div class="card"><div class="card__head">Submitted request · location &amp; offboarding</div><div class="card__body">
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">Location</label><input class="em-c-input" id="ov-loc" value="Fawley Terminal Office" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Location ID</label><input class="em-c-input" id="ov-id" value="LOC-41002" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Business line</label><input class="em-c-input" id="ov-bl" value="Fuels" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Reason</label><input class="em-c-input" id="ov-reason" value="Lease expiry" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Owned / leased</label><input class="em-c-input" id="ov-tenure" value="Leased (CBRE)" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Target exit date</label><input class="em-c-input" id="ov-exit" value="Jul 21, 2026" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Lease / vendor</label><input class="em-c-input" id="ov-lease" value="SEQ-33019 · CBRE" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Commercial PM</label><input class="em-c-input" id="ov-pm" value="J. Hamilton" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Requestor</label><input class="em-c-input" value="A. Stern" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Submitted</label><input class="em-c-input" value="Jun 20, 2026" disabled></div>
+      </div>
+      <div class="em-c-field"><label class="em-c-field__label">Business reason</label><textarea class="em-c-textarea" id="ov-note" disabled>Lease expires with no renewal intent; consolidate into Southampton hub.</textarea></div>
+    </div></div>
+  </section>
+
+  </main>
+
+  <!-- ===== Create Site modal (opened from a Location record's Site section) ===== -->
+  <div class="modal-overlay hidden" id="site-modal">
+    <div class="modal">
+      <div class="modal__head"><h3>Create a new site</h3><button class="modal__close" onclick="closeSiteModal()">×</button></div>
+      <div class="modal__body">
+        <p class="note" style="margin-top:0">This site will be linked to the location you're editing as soon as you save it.</p>
+        <div class="em-c-field"><label class="em-c-field__label">Site name<span class="req">*</span></label><input class="em-c-input" id="sm-name" placeholder="e.g. Baytown Complex"></div>
+        <div class="grid2">
+          <div class="em-c-field"><label class="em-c-field__label">Site code<span class="req">*</span></label><input class="em-c-input" id="sm-code" placeholder="e.g. BYTN-02"></div>
+          <div class="em-c-field"><label class="em-c-field__label">Site — primary use<span class="req">*</span></label><select class="em-c-select"><option>Please select a value…</option><option>Office</option><option>Terminal</option><option>Laboratory</option><option>Retail</option><option>Data centre</option></select></div>
+          <div class="em-c-field"><label class="em-c-field__label">Site — country<span class="req">*</span></label><select class="em-c-select"><option>Please select a value…</option><option>United States</option><option>United Kingdom</option><option>Singapore</option></select></div>
+          <div class="em-c-field"><label class="em-c-field__label">Operation status</label><select class="em-c-select"><option>Proposed</option><option>Active</option></select></div>
+        </div>
+      </div>
+      <div class="modal__foot">
+        <button class="em-c-btn em-c-btn--tertiary" onclick="closeSiteModal()">Cancel</button>
+        <button class="em-c-btn em-c-btn--primary" onclick="saveNewSite()">Create &amp; link site</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Create Building modal (opened from a Location record's Buildings section) ===== -->
+  <div class="modal-overlay hidden" id="bldg-modal">
+    <div class="modal">
+      <div class="modal__head"><h3>Create a new building</h3><button class="modal__close" onclick="closeBuildingModal()">×</button></div>
+      <div class="modal__body">
+        <p class="note" style="margin-top:0">This building will be linked to the location you're editing, and configured/confirmed in Nuvolo as its system of record.</p>
+        <div class="em-c-field"><label class="em-c-field__label">Building name<span class="req">*</span></label><input class="em-c-input" id="bm-name" placeholder="e.g. Bldg 4"></div>
+        <div class="em-c-field"><label class="em-c-field__label">Building description</label><input class="em-c-input" id="bm-desc" placeholder="e.g. Two-storey office building"></div>
+        <div class="grid2">
+          <div class="em-c-field"><label class="em-c-field__label">Placeholder / forecasted?</label><select class="em-c-select"><option>No — real building</option><option>Yes — placeholder until confirmed in Nuvolo</option></select></div>
+          <div class="em-c-field"><label class="em-c-field__label">Timezone</label><select class="em-c-select"><option>Inherit from Nuvolo once linked</option></select></div>
+        </div>
+      </div>
+      <div class="modal__foot">
+        <button class="em-c-btn em-c-btn--tertiary" onclick="closeBuildingModal()">Cancel</button>
+        <button class="em-c-btn em-c-btn--primary" onclick="saveNewBuilding()">Create &amp; link building</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="em-c-footer">
+    <div class="em-c-footer__inner">
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="110px" height="30px" viewBox="5 0 110 30" xml:space="preserve"><path fill="#000000" d="M44.7,9.5h2.6v0.9c0.3-0.2,1.2-1.1,2.9-1.1c2,0,3.6,1.5,3.6,3.8v6H51v-5.2c0-1.3-0.6-2-1.8-2 c-1.1,0-1.8,0.7-1.8,2V19h-2.8V9.5z M73.9,14.2c0-1.3,1-2.4,2.4-2.4c1.4,0,2.4,1.1,2.4,2.4c0,1.3-1,2.4-2.4,2.4 C74.9,16.6,73.9,15.6,73.9,14.2z M71.2,14.2c0,2.7,2.2,5,5.1,5c2.9,0,5.1-2.2,5.1-5c0-2.7-2.2-5-5.1-5C73.4,9.3,71.2,11.5,71.2,14.2 z M35.7,14.2c0-1.3,1-2.4,2.4-2.4c1.4,0,2.4,1.1,2.4,2.4c0,1.3-1,2.4-2.4,2.4C36.7,16.6,35.7,15.6,35.7,14.2z M32.9,14.2 c0,2.7,2.2,5,5.1,5c2.9,0,5.1-2.2,5.1-5c0-2.7-2.2-5-5.1-5C35.1,9.3,32.9,11.5,32.9,14.2z M94.9,9.5h2.8v8.9V19h-2.8V9.5z M94.9,6 h2.8v2.4h-2.8V6z M99.9,6h2.8v12.4V19h-2.8V6z M90.4,14.2c0,1.3-1,2.4-2.4,2.4c-1.4,0-2.4-1-2.4-2.4c0-1.4,1-2.4,2.4-2.4 C89.4,11.9,90.4,12.9,90.4,14.2z M85.7,19l0-0.7c0.2,0.1,1.1,1,2.9,1c2.4,0,4.6-2.2,4.6-5c0-2.8-2.1-5-4.6-5c-1.9,0-2.8,0.9-2.9,1V6 H83v13H85.7z M19.8,19l2.9-3.8l1.8,1.9l-4.2,5.2h3.3l2.7-3.5l5,5.1h4l-7.3-7.3l5.7-7.2h-3.3l-4.2,5.4l-1.8-1.8l4.7-5.9h-3.3 l-3.2,4.1l-1.7-1.8H17l3.9,4L16.5,19H19.8z M7.3,6h8.6v2.4h-5.7v2.7h5.4v2.4h-5.4v3.1h5.7V19H7.3V6z M56,6h4.6l2.2,9.5h0.1L65.1,6 h4.5v13h-2.7V9.2h-0.1L64.3,19h-3.1l-2.4-9.8h-0.1V19H56V6z"/></svg>
+      <div class="em-c-footer__spacer"></div>
+      <a class="em-c-footer__item" href="#">Privacy Policy</a>
+    </div>
+  </footer>
+
+<script>
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('hidden', s.dataset.screen!==id));
+  document.querySelectorAll('.em-c-primary-nav__link').forEach(a=>a.classList.toggle('on', a.dataset.go===id));
+  document.querySelector('.stage').scrollTop=0; window.scrollTo(0,0);
+  if(id==='onboarding-form'){wstep=0;wrender();}
+  if(id==='checklist' && !window._tdset){openTask('relate');}
+  if(id==='manage-location' && !currentLocId){viewLocation('LOC-88231');}
+}
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]'); if(g){show(g.dataset.go); e.stopPropagation(); return;}
+  const tb=e.target.closest('.tabbtn'); if(tb){
+    document.querySelectorAll('#tab-onb,#tab-off,#tab-all').forEach(p=>p.classList.add('hidden'));
+    document.getElementById(tb.dataset.tab).classList.remove('hidden');
+    tb.parentElement.querySelectorAll('.tabbtn').forEach(b=>b.classList.toggle('em-is-active',b===tb));
+    const genericToolbar=document.getElementById('loc-toolbar');
+    if(genericToolbar) genericToolbar.classList.toggle('hidden', tb.dataset.tab==='tab-all');
+  }
+});
+/* All Locations — search filters (matches the current Connexion "Location Search" fields) */
+function doLocationSearch(){
+  const store=document.getElementById('lf-store').value.trim().toLowerCase();
+  const name=document.getElementById('lf-name').value.trim().toLowerCase();
+  const street=document.getElementById('lf-street').value.trim().toLowerCase();
+  const city=document.getElementById('lf-city').value.trim().toLowerCase();
+  const status=document.getElementById('lf-status').value.trim().toLowerCase();
+  const region=document.getElementById('lf-region').value.trim().toLowerCase();
+  const country=document.getElementById('lf-country').value.trim().toLowerCase();
+  let shown=0, total=0;
+  document.querySelectorAll('#all-loc-tbody tr').forEach(tr=>{
+    total++;
+    const ok = (!store || (tr.dataset.store||'').includes(store))
+      && (!name || (tr.dataset.name||'').includes(name))
+      && (!street || (tr.dataset.street||'').includes(street))
+      && (!city || (tr.dataset.city||'').includes(city))
+      && (!status || (tr.dataset.status||'')===status)
+      && (!region || (tr.dataset.region||'')===region)
+      && (!country || (tr.dataset.country||'')===country);
+    tr.classList.toggle('hidden', !ok);
+    if(ok) shown++;
+  });
+  document.getElementById('lf-result-note').textContent = shown+' of '+total+' shown (this demo only searches the 6 sample rows)';
+}
+function clearLocationSearch(){
+  ['lf-store','lf-name','lf-street','lf-city','lf-status','lf-region','lf-country'].forEach(id=>document.getElementById(id).value='');
+  document.querySelectorAll('#all-loc-tbody tr').forEach(tr=>tr.classList.remove('hidden'));
+  document.getElementById('lf-result-note').textContent='';
+}
+
+/* onboarding wizard */
+let wstep=0;
+function wrender(){
+  for(let i=0;i<2;i++){
+    document.getElementById('wf'+i).classList.toggle('hidden', i!==wstep);
+    const st=document.getElementById('wstep'+i);
+    st.classList.toggle('on', i===wstep);
+    st.classList.toggle('done', i<wstep);
+  }
+  document.getElementById('wback').style.visibility = wstep===0?'hidden':'visible';
+  document.getElementById('wnext').textContent = wstep===1?'Submit ✓':'Next ›';
+}
+
+/* task detail — one task, action varies by type */
+const TASKS={
+  relate:{title:'Relate cost object to location',status:['In progress','proposed'],
+    desc:'The SAP team has created the cost object for this location. This task links that cost object to the location record in UDM 2.0.',
+    action:'<div class="reqsent prog">\u25cf In progress \u2014 not yet related</div><div><button class="em-c-btn em-c-btn--primary" data-go="source-system-relate">Open Source System Management \u2192</button></div>'},
+  request:{title:'Create cost centre in SAP',status:['Completed','active'],
+    desc:'The E&PS cost centre / cost object is created by the SAP team. This task raises that request and tracks it until the codes are returned.',
+    action:'<div class="reqsent">\u2713 Completed \u2014 26 Jun 2026 \u00b7 cost centre returned by SAP</div><div><button class="em-c-btn em-c-btn--secondary">View request</button></div>'},
+  internal:{title:'Configure site & location in UDM',status:['In progress','proposed'],
+    desc:'This task navigates to site/location pages to create and manage them.',
+    action:'<div class="reqsent prog">\u25cf In progress \u2014 awaiting configuration</div><div><button class="em-c-btn em-c-btn--primary" onclick="viewLocation(\'LOC-88231\')">Open Location Master Data Management \u2192</button></div>'}
+};
+
+/* manage-location: section sub-tabs */
+document.addEventListener('click', e=>{
+  const t = e.target.closest('.mltab'); if(!t) return;
+  document.querySelectorAll('.mltab').forEach(b=>b.classList.toggle('em-is-active', b===t));
+  document.querySelectorAll('.mlsec').forEach(s=>s.classList.add('hidden'));
+  document.getElementById(t.dataset.mlsec).classList.remove('hidden');
+});
+
+/* ===== Location records (All Locations tab -> Location record form) ===== */
+const LOCS={
+  'LOC-88231':{name:'Baytown Annex',desc:'New chemicals office annex supporting Baytown Complex expansion.',addr1:'5000 Bayway Dr',addr2:'',city:'Baytown',state:'Texas',region:'',country:'United States',postal:'77520',lat:'',long:'',
+    loctype:'Office',primaryuse:'Office',status:'Proposed',locgroup:'Physical',gasbrand:'',storebrand:'',security:'',cpm:'',
+    bl:'Chemicals',valuechain:'',blru:'',alloc:'100%',ru:'',aru:'',
+    site:{linked:[],picker:'',srcsys:'',srctype:'',srcref:''},
+    timezone:'',
+    buildings:[],
+    rei:{name:'',desc:'',area:'',type:'',primary:false,lat:'',long:'',srcsys:'',srctype:'',srcref:''},
+    sapcode:'',costcenter:'',costobj:'',costobjtype:'',reqId:'REQ-2043',pill:'proposed',status_pill_label:'Proposed'},
+  'LOC-77012':{name:'Pearland Field Office',desc:'Field office supporting Pearland operations.',addr1:'2200 Industrial Blvd',addr2:'Suite 4',city:'Pearland',state:'Texas',region:'Gulf Coast',country:'United States',postal:'77584',lat:'29.5636',long:'-95.2860',
+    loctype:'Office',primaryuse:'Office',status:'Approved',locgroup:'Physical',gasbrand:'NA',storebrand:'NA',security:'Open Access',cpm:'R. Landaas',
+    bl:'Chemicals',valuechain:'Base Chemicals',blru:'0117 - ExxonMobil Chemical Company',alloc:'100%',ru:'ExxonMobil Chemical Company',aru:'0117:ExxonMobil Chemical Company',
+    site:{linked:[{name:'Pearland',code:'PRLD-01'}],picker:'',srcsys:'Connexion',srctype:'Legacy Location Code',srcref:'PRLD-01-SRC'},
+    timezone:'America/Chicago (Central)',
+    buildings:[{name:'Pearland — Main Office',desc:'2-storey office building'}],
+    rei:{name:'Pearland Field Office Parcel',desc:'Leased office space',area:'12,400 sq ft',type:'Lease',primary:true,lat:'29.5636',long:'-95.2860',srcsys:'Sequentra',srctype:'Sequentra File ID',srcref:'SEQ-88021'},
+    sapcode:'770120',costcenter:'CC-77012',costobj:'CO-77012-A',costobjtype:'Facility',reqId:'',pill:'approved',status_pill_label:'Approved'},
+  'LOC-55021':{name:'Pegasus Place Data Ctr',desc:'Primary corporate data centre.',addr1:'8500 Pegasus Way',addr2:'',city:'Dallas',state:'Texas',region:'',country:'United States',postal:'75201',lat:'32.7767',long:'-96.7970',
+    loctype:'Terminal',primaryuse:'Data centre',status:'Active',locgroup:'Physical',gasbrand:'NA',storebrand:'NA',security:'Strategic Planning – General',cpm:'A. Ohagan',
+    bl:'Corporate',valuechain:'Corporate Services',blru:'0100 - Exxon Mobil Corporation',alloc:'100%',ru:'Exxon Mobil Corporation',aru:'0100:Exxon Mobil Corporation',
+    site:{linked:[{name:'Dallas HQ',code:'DAL-HQ'}],picker:'',srcsys:'UDM',srctype:'UDM Site ID',srcref:'SITE-55021'},
+    timezone:'America/Chicago (Central)',
+    buildings:[{name:'Dallas HQ — Tower A',desc:'Data centre floors 1-3'},{name:'Dallas HQ — Tower B',desc:'Backup power / cooling plant'}],
+    rei:{name:'Dallas HQ Parcel',desc:'Owned corporate campus',area:'240,000 sq ft',type:'Fee (owned)',primary:true,lat:'32.7767',long:'-96.7970',srcsys:'UDM',srctype:'UDM Parcel ID',srcref:'PARCEL-55021'},
+    sapcode:'550210',costcenter:'CC-55021',costobj:'CO-55021-A',costobjtype:'Facility',reqId:'REQ-2041',pill:'active',status_pill_label:'Active'},
+  'LOC-41002':{name:'Fawley Terminal Office',desc:'Terminal office — entering offboarding (lease expiry).',addr1:'Marine Parade',addr2:'',city:'Fawley',state:'',region:'',country:'United Kingdom',postal:'SO45 1TX',lat:'50.8144',long:'-1.3397',
+    loctype:'Office',primaryuse:'Office',status:'Offboarding',locgroup:'Physical',gasbrand:'Esso',storebrand:'NA',security:'Open Access',cpm:'J. Hamilton',
+    bl:'Fuels',valuechain:'Fuels & Distribution',blru:'0119 - Automarket Limited',alloc:'100%',ru:'Automarket Limited',aru:'0119:Automarket Limited',
+    site:{linked:[{name:'Fawley',code:'FWLY-01'}],picker:'',srcsys:'Connexion',srctype:'Legacy Location Code',srcref:'FWLY-01-SRC'},
+    timezone:'Europe/London (GMT)',
+    buildings:[{name:'Fawley — Terminal Bldg',desc:'Office + terminal control room'}],
+    rei:{name:'Fawley Terminal Office Parcel',desc:'Leased office',area:'6,200 sq ft',type:'Lease',primary:true,lat:'50.8144',long:'-1.3397',srcsys:'Sequentra',srctype:'Sequentra File ID',srcref:'SEQ-33019'},
+    sapcode:'410020',costcenter:'CC-41002',costobj:'CO-41002-A',costobjtype:'Facility',reqId:'',pill:'offboarding',status_pill_label:'Offboarding'},
+  'LOC-33019':{name:'Singapore JV Lab',desc:'Joint-venture chemicals laboratory.',addr1:'1 Jurong Innovation Way',addr2:'',city:'Jurong',state:'',region:'APAC',country:'Singapore',postal:'628000',lat:'1.3382',long:'103.6989',
+    loctype:'Laboratory',primaryuse:'Laboratory',status:'Operational',locgroup:'Physical',gasbrand:'NA',storebrand:'NA',security:'Business Improvement',cpm:'A. Stern',
+    bl:'Chemicals',valuechain:'Specialty Chemicals',blru:'0119 - Mei Foo Properties Limited',alloc:'70%',ru:'Mei Foo Properties Limited',aru:'0119:Mei Foo Properties Limited',
+    site:{linked:[{name:'Jurong',code:'JRNG-02'}],picker:'',srcsys:'Connexion',srctype:'Legacy Location Code',srcref:'JRNG-02-SRC'},
+    timezone:'Asia/Singapore (SGT)',
+    buildings:[{name:'Jurong — Lab 2',desc:'JV laboratory + cleanroom'}],
+    rei:{name:'Singapore JV Lab Parcel',desc:'Joint-venture leased lab space',area:'18,000 sq ft',type:'Lease',primary:true,lat:'1.3382',long:'103.6989',srcsys:'Sequentra',srctype:'Sequentra File ID',srcref:'SEQ-70118'},
+    sapcode:'330190',costcenter:'CC-33019',costobj:'CO-33019-A',costobjtype:'Facility',reqId:'REQ-2035',pill:'operational',status_pill_label:'Operational'},
+  'LOC-11902':{name:'York PA Bulk Plant',desc:'Legacy bulk plant — divested, historical record.',addr1:'900 Depot Rd',addr2:'',city:'York',state:'Pennsylvania',region:'',country:'United States',postal:'17402',lat:'39.9626',long:'-76.7277',
+    loctype:'Bulk Plant/Depot',primaryuse:'Bulk Plant/Depot',status:'Historical',locgroup:'Physical',gasbrand:'Mobil',storebrand:'NA',security:'Open Access',cpm:'J. Hamilton',
+    bl:'Fuels',valuechain:'Fuels & Distribution',blru:'0102 - ExxonMobil Product Solutions',alloc:'100%',ru:'ExxonMobil Product Solutions',aru:'0102:ExxonMobil Product Solutions',
+    site:{linked:[{name:'York',code:'YORK-01'}],picker:'',srcsys:'UDM',srctype:'UDM Site ID',srcref:'SITE-11902'},
+    timezone:'America/New_York (Eastern)',
+    buildings:[],
+    rei:{name:'York PA Bulk Plant Parcel',desc:'Divested — record retained for audit',area:'—',type:'Fee (owned)',primary:true,lat:'39.9626',long:'-76.7277',srcsys:'UDM',srctype:'UDM Parcel ID',srcref:'PARCEL-11902'},
+    sapcode:'119020',costcenter:'—',costobj:'—',costobjtype:'—',reqId:'',pill:'historical',status_pill_label:'Historical'}
+};
+
+function renderSiteLinked(loc){
+  const wrap=document.getElementById('ml-site-linked');
+  if(!loc.site.linked.length){ wrap.innerHTML='<div class="linked-empty">No site linked yet — add an existing one below, or create a new one.</div>'; return; }
+  wrap.innerHTML='<div class="linked-list">'+loc.site.linked.map(s=>
+    '<div class="linked-item"><div class="ico">S</div><div class="meta"><div class="t">'+s.name+'</div><div class="s">Site code '+s.code+'</div></div><span class="pill active">Linked</span></div>'
+  ).join('')+'</div>';
+  const first=loc.site.linked[0];
+  document.getElementById('ml-sitecode').value=first.code;
+  document.getElementById('ml-sitename').value=first.name;
+}
+function renderBuildingsLinked(loc){
+  const wrap=document.getElementById('ml-bldg-linked');
+  if(!loc.buildings.length){ wrap.innerHTML='<div class="linked-empty">No buildings linked yet — add an existing one below, or create a new one.</div>'; return; }
+  wrap.innerHTML='<div class="linked-list">'+loc.buildings.map(b=>
+    '<div class="linked-item"><div class="ico">B</div><div class="meta"><div class="t">'+b.name+'</div><div class="s">'+(b.desc||'')+'</div></div><span class="pill active">Linked</span></div>'
+  ).join('')+'</div>';
+}
+
+let currentLocId=null;
+function viewLocation(id){
+  const l=LOCS[id]; if(!l) return;
+  currentLocId=id;
+  document.getElementById('ml-crumb').textContent=id;
+  document.getElementById('ml-h1').textContent='Manage location — '+l.name;
+  document.getElementById('ml-locid').value=id;
+  document.getElementById('ml-isproposed').value = l.status==='Proposed' ? 'Yes':'No';
+  const set=(elId,v)=>{const el=document.getElementById(elId); if(el) el.value=v;};
+  set('ml-name',l.name); set('ml-desc',l.desc); set('ml-addr1',l.addr1); set('ml-addr2',l.addr2);
+  set('ml-city',l.city); set('ml-state',l.state); set('ml-region',l.region); set('ml-country',l.country);
+  set('ml-postal',l.postal); set('ml-lat',l.lat); set('ml-long',l.long);
+  set('ml-loctype',l.loctype); set('ml-primaryuse',l.primaryuse); set('ml-status',l.status); set('ml-locgroup',l.locgroup);
+  set('ml-gasbrand',l.gasbrand); set('ml-storebrand',l.storebrand); set('ml-security',l.security); set('ml-cpm',l.cpm);
+  set('ml-bl',l.bl); set('ml-valuechain',l.valuechain); set('ml-blru',l.blru); set('ml-alloc',l.alloc); set('ml-ru',l.ru); set('ml-aru',l.aru);
+  set('ml-reiname',l.rei.name); set('ml-reidesc',l.rei.desc); set('ml-reiarea',l.rei.area); set('ml-reitype',l.rei.type);
+  document.getElementById('ml-reiprimary').checked = !!l.rei.primary;
+  set('ml-reilat',l.rei.lat); set('ml-reilong',l.rei.long);
+  set('ml-reisrcsys',l.rei.srcsys); set('ml-reisrctype',l.rei.srctype); set('ml-reisrcref',l.rei.srcref);
+  set('ml-sitesrcsys',l.site.srcsys); set('ml-sitesrctype',l.site.srctype); set('ml-sitesrcref',l.site.srcref);
+  set('ml-bldg-timezone', l.timezone || '');
+  set('ml-sapcode',l.sapcode); set('ml-costcenter',l.costcenter); set('ml-costobj',l.costobj); set('ml-costobjtype',l.costobjtype);
+  renderSiteLinked(l); renderBuildingsLinked(l);
+
+  const st=document.getElementById('ml-pill'); st.textContent=l.status_pill_label; st.className='pill '+l.pill;
+
+  // reset to first tab
+  document.querySelectorAll('.mltab').forEach((b,i)=>b.classList.toggle('em-is-active', i===0));
+  document.querySelectorAll('.mlsec').forEach((s,i)=>s.classList.toggle('hidden', i!==0));
+
+  show('manage-location');
+}
+
+/* ===== Site create modal ===== */
+function openSiteModal(){ document.getElementById('site-modal').classList.remove('hidden'); }
+function closeSiteModal(){ document.getElementById('site-modal').classList.add('hidden'); }
+function saveNewSite(){
+  const name=document.getElementById('sm-name').value.trim()||'New site';
+  const code=document.getElementById('sm-code').value.trim()||'NEW-'+Math.floor(Math.random()*900+100);
+  if(currentLocId){ LOCS[currentLocId].site.linked=[{name:name,code:code}]; renderSiteLinked(LOCS[currentLocId]); }
+  closeSiteModal();
+  document.getElementById('sm-name').value=''; document.getElementById('sm-code').value='';
+}
+function addExistingSite(){
+  const sel=document.getElementById('ml-site-picker'); const name=sel.value; if(!name || !currentLocId) return;
+  const code=name.substring(0,4).toUpperCase()+'-'+Math.floor(Math.random()*90+10);
+  LOCS[currentLocId].site.linked=[{name:name,code:code}];
+  renderSiteLinked(LOCS[currentLocId]); sel.value='';
+}
+
+/* ===== Building create modal ===== */
+function openBuildingModal(){ document.getElementById('bldg-modal').classList.remove('hidden'); }
+function closeBuildingModal(){ document.getElementById('bldg-modal').classList.add('hidden'); }
+function saveNewBuilding(){
+  const name=document.getElementById('bm-name').value.trim()||'New building';
+  const desc=document.getElementById('bm-desc').value.trim();
+  if(currentLocId){ LOCS[currentLocId].buildings.push({name:name,desc:desc}); renderBuildingsLinked(LOCS[currentLocId]); }
+  closeBuildingModal();
+  document.getElementById('bm-name').value=''; document.getElementById('bm-desc').value='';
+}
+function addExistingBuilding(){
+  const sel=document.getElementById('ml-bldg-picker'); const name=sel.value; if(!name || !currentLocId) return;
+  LOCS[currentLocId].buildings.push({name:name,desc:'Linked from existing building record'});
+  renderBuildingsLinked(LOCS[currentLocId]); sel.value='';
+}
+
+/* submitted onboarding request viewer */
+const REQS={
+  'REQ-2043':{name:'Baytown Annex',type:'Office',use:'Office',bl:'Chemicals',country:'United States',city:'Baytown',rent:'$12,000',trigger:'Footprint strategy',status:'In review',pill:'proposed',decision:''},
+  'REQ-2041':{name:'Pegasus Place Data Ctr',type:'Data centre',use:'Data centre',bl:'Corporate',country:'United States',city:'Dallas',rent:'$48,000',trigger:'Acquisition',status:'Approved',pill:'approved',decision:'Approved by Property Data Governance \u00b7 23 Jun 2026 \u2014 transaction project TP-2041 opened.'},
+  'REQ-2039':{name:'Fawley Terminal Office',type:'Office',use:'Office',bl:'Fuels',country:'United Kingdom',city:'Fawley',rent:'\u00a39,500',trigger:'Work-on-behalf',status:'Rejected',pill:'blocked',decision:'Rejected \u00b7 21 Jun 2026 \u2014 duplicate of existing location LOC-41002.'},
+  'REQ-2038':{name:'Joliet Retail 118',type:'Retail',use:'Retail',bl:'Retail',country:'United States',city:'Joliet',rent:'$6,900',trigger:'Business-line handover',status:'In review',pill:'proposed',decision:''},
+  'REQ-2035':{name:'Singapore JV Lab',type:'Laboratory',use:'Laboratory',bl:'Chemicals',country:'Singapore',city:'Jurong',rent:'S$21,050',trigger:'Footprint strategy',status:'Approved',pill:'approved',decision:'Approved by Property Data Governance \u00b7 16 Jun 2026 \u2014 transaction project opened.'}
+};
+function viewReq(id){
+  const r=REQS[id]; if(!r) return;
+  document.getElementById('rv-crumb').textContent=id;
+  document.getElementById('rv-title').textContent='Location onboarding request \u2014 '+r.name;
+  const st=document.getElementById('rv-status'); st.textContent=r.status; st.className='pill '+r.pill;
+  const set=(i,v)=>{const el=document.getElementById(i); if(el) el.value=v;};
+  set('rv-name',r.name);set('rv-type',r.type);set('rv-use',r.use);set('rv-bl',r.bl);
+  set('rv-country',r.country);set('rv-city',r.city);set('rv-rent',r.rent);set('rv-trigger',r.trigger);
+  const dec=document.getElementById('rv-decision');
+  if(r.decision){dec.style.display='block';dec.innerHTML=r.decision; dec.style.borderColor = r.pill==='blocked'?'var(--red)':'var(--green)'; dec.style.background = r.pill==='blocked'?'#f7e4e1':'var(--green-ghost)';}
+  else{dec.style.display='none';}
+  const ap=document.getElementById('rv-approve'); if(ap) ap.style.display = r.pill==='proposed' ? 'inline-flex' : 'none';
+  show('request-view');
+}
+
+/* submitted offboarding request viewer */
+const OFFS={
+  'TP-1990':{loc:'Fawley Terminal Office',id:'LOC-41002',bl:'Fuels',reason:'Lease expiry',tenure:'Leased (CBRE)',exit:'Jul 21, 2026',lease:'SEQ-33019 \u00b7 CBRE',pm:'J. Hamilton',note:'Lease expires with no renewal intent; consolidate into Southampton hub.',status:'In review',pill:'proposed',decision:''},
+  'TP-1984':{loc:'York PA Bulk Plant',id:'LOC-11902',bl:'Fuels',reason:'Footprint strategy',tenure:'Owned (divestment)',exit:'Jun 30, 2026',lease:'\u2014',pm:'J. Hamilton',note:'Site surplus to footprint strategy; begin divestment.',status:'Approved',pill:'approved',decision:'Approved by Property Data Governance \u00b7 24 Jun 2026 \u2014 offboarding project TP-1984 now in closeout.'},
+  'TP-1978':{loc:'Buenos Aires Office',id:'LOC-60011',bl:'Corporate',reason:'Divestment',tenure:'Leased (CBRE)',exit:'Sep 22, 2026',lease:'SEQ-70233 \u00b7 CBRE',pm:'A. Ohagan',note:'Exit local office as part of regional consolidation.',status:'Rejected',pill:'blocked',decision:'Rejected \u00b7 20 Jun 2026 \u2014 active lease obligations remain; returned to Commercial PM.'}
+};
+function viewOff(id){
+  const r=OFFS[id]; if(!r) return;
+  document.getElementById('ov-crumb').textContent=id;
+  document.getElementById('ov-title').textContent='Location offboarding request \u2014 '+r.loc;
+  const st=document.getElementById('ov-status'); st.textContent=r.status; st.className='pill '+r.pill;
+  const set=(i,v)=>{const el=document.getElementById(i); if(el) el.value=v;};
+  set('ov-loc',r.loc);set('ov-id',r.id);set('ov-bl',r.bl);set('ov-reason',r.reason);
+  set('ov-tenure',r.tenure);set('ov-exit',r.exit);set('ov-lease',r.lease);set('ov-pm',r.pm);set('ov-note',r.note);
+  const dec=document.getElementById('ov-decision');
+  if(r.decision){dec.style.display='block';dec.innerHTML=r.decision; dec.style.borderColor=r.pill==='blocked'?'var(--red)':'var(--green)'; dec.style.background=r.pill==='blocked'?'#f7e4e1':'var(--green-ghost)';}
+  else{dec.style.display='none';}
+  const ap=document.getElementById('ov-approve'); if(ap) ap.style.display = r.pill==='proposed' ? 'inline-flex' : 'none';
+  show('offboard-view');
+}
+function openTask(type){
+  const t=TASKS[type]||TASKS.relate; window._tdset=true;
+  document.getElementById('td-title').textContent=t.title;
+  const st=document.getElementById('td-status'); st.textContent=t.status[0]; st.className='pill '+t.status[1];
+  document.getElementById('td-desc').textContent=t.desc;
+  document.getElementById('td-action').innerHTML=t.action;
+  show('checklist');
+}
+function wnext(){ if(wstep<1){wstep++;wrender();} else {show('approval-onboarding');} }
+function wprev(){ if(wstep>0){wstep--;wrender();} }
+show('loc-initial');
+</script>
+</body>
+</html>
