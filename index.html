@@ -20,16 +20,24 @@ html,body{margin:0;background:var(--subtle);font-family:var(--font);color:var(--
 a{color:var(--blue);text-decoration:none}
 .hidden{display:none!important}
 
-/* ===== Standard HorizontalHeader (em-c-header) — light masthead; logo lives in footer per Standard ===== */
-.em-c-header{background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 24px;height:64px;position:sticky;top:0;z-index:20}
-.em-c-header__title{color:var(--ink);font-weight:700;font-size:15px;padding-right:22px;margin-right:6px;border-right:1px solid var(--line)}
-.em-c-primary-nav{display:flex;align-items:stretch;margin-left:20px;height:100%}
-.em-c-primary-nav__link{display:flex;align-items:center;padding:0 16px;color:var(--muted);font-size:13.5px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent}
-.em-c-primary-nav__link:hover{color:var(--ink)}
-.em-c-primary-nav__link.on{color:var(--blue);border-bottom-color:var(--blue)}
+/* ===== Standard HorizontalHeader (em-c-header) — red gradient masthead per Exxon Standard reference ===== */
+.em-c-header{background:linear-gradient(90deg,#3A397B 0%,#3A397B 23%,#0C69B0 82%,#0C69B0 100%);border-bottom:none;display:flex;align-items:center;padding:0 28px;height:68px;position:sticky;top:0;z-index:20}
+.em-c-header__title{color:#fff;font-weight:700;font-size:16px;padding-right:24px;margin-right:8px;border-right:1px solid rgba(255,255,255,.3)}
+.em-c-primary-nav{display:flex;align-items:stretch;margin-left:8px;height:100%}
+.em-c-primary-nav__link{display:flex;align-items:center;padding:0 16px;color:rgba(255,255,255,.85);font-size:13.5px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent}
+.em-c-primary-nav__link:hover{color:#fff}
+.em-c-primary-nav__link.on{color:#fff;font-weight:800;border-bottom-color:#fff}
 .em-c-header__spacer{flex:1}
-.em-c-header__user{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px}
-.em-c-header__user .av{width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+.em-c-header__user{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.9);font-size:13px;font-weight:600}
+.em-c-header__user .av{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.2);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+.header-bell{position:relative;display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;cursor:pointer;margin-right:22px;color:rgba(255,255,255,.9);transition:color .15s ease}
+.header-bell:hover{color:#fff}
+.bell-badge{background:#fff;color:#0C69B0;font-size:11px;font-weight:800;border-radius:4px;padding:1px 6px;line-height:1.4}
+.header-search-ico{color:rgba(255,255,255,.9);font-size:16px;cursor:pointer;margin-left:4px}
+.header-search-ico:hover{color:#fff}
+.edit-ico{font-size:14px;padding:4px 8px;cursor:pointer;border-radius:4px;opacity:.75;transition:opacity .15s ease,background .15s ease}
+.edit-ico:hover{opacity:1;background:var(--blue-ghost)}
+
 
 /* ===== layout ===== */
 .stage{padding:26px 34px;max-width:1440px;margin:0 auto;min-height:calc(100vh - 64px - 92px)}
@@ -320,16 +328,17 @@ a{color:var(--blue);text-decoration:none}
 <body>
 
 <header class="em-c-header">
-    <div class="em-c-header__title">Unified Data Model 2.0</div>
+    <div class="em-c-header__title">Location Data Management</div>
   <nav class="em-c-primary-nav">
-    <a class="em-c-primary-nav__link on" data-go="loc-initial">Locations</a>
+    <a class="em-c-primary-nav__link on" data-go="loc-initial">Home</a>
     <a class="em-c-primary-nav__link" data-go="approval-list">Approvals</a>
-    <a class="em-c-primary-nav__link" data-go="transaction-projects">Transaction projects</a>
+    <a class="em-c-primary-nav__link" data-go="transaction-projects">Transaction project</a>
     <a class="em-c-primary-nav__link" data-go="source-system-relate">Source System Management</a>
     <a class="em-c-primary-nav__link" data-go="metadata">Metadata</a>
   </nav>
   <div class="em-c-header__spacer"></div>
-  <div class="em-c-header__user"><span class="av">AS</span> A. Stern</div>
+  <div class="header-bell" title="Notifications">Notifications <span class="bell-badge">11</span></div>
+  <div class="header-search-ico" title="Search">🔍</div>
 </header>
 
 <main class="stage">
@@ -341,18 +350,9 @@ a{color:var(--blue);text-decoration:none}
     <div class="page-head">
       <div><h1>Locations</h1><div class="sub">Onboard or offboard a location, and manage an existing one</div></div>
       <div class="actions">
-        <button class="em-c-btn em-c-btn--primary" data-go="onboarding-form">Location Request Form</button>
-        <button class="em-c-btn em-c-btn--primary" data-go="offboard-form">Offboard Location</button>
+        <button class="em-c-btn em-c-btn--primary" data-go="onboarding-form">Onboarding request form</button>
+        <button class="em-c-btn em-c-btn--primary" data-go="offboard-form">Offboarding request form</button>
       </div>
-    </div>
-
-    <div class="em-c-toolbar" id="loc-toolbar">
-      <div class="em-c-search">🔍 <input placeholder="Search location, site, address…"></div>
-      <select class="toolbar-select"><option>Status: All</option><option>Proposed</option><option>Approved</option><option>Active</option><option>Operational</option><option>Offboarding</option></select>
-      <select class="toolbar-select"><option>Business line: All</option><option>Chemicals</option><option>Fuels</option><option>Retail</option></select>
-      <select class="toolbar-select"><option>Country: All</option></select>
-      <div style="flex:1"></div>
-      <button class="em-c-btn em-c-btn--tertiary"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" style="margin-right:2px"><path d="M8 2v7m0 0l-3-3m3 3l3-3M3.5 13h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Export</button>
     </div>
 
     <div class="em-c-tabs">
@@ -363,28 +363,52 @@ a{color:var(--blue);text-decoration:none}
 
     <!-- tab: onboarding requests -->
     <div class="tabpane" id="tab-onb">
+      <div class="stat-strip">
+        <div class="stat-tile t-amber" onclick="filterReqs('In review')"><div class="ico">⏳</div><div><div class="num">3</div><div class="lbl">In review</div></div></div>
+        <div class="stat-tile t-green" onclick="filterReqs('Approved')"><div class="ico">✓</div><div><div class="num">2</div><div class="lbl">Approved</div></div></div>
+        <div class="stat-tile t-red" onclick="filterReqs('Rejected')"><div class="ico">✕</div><div><div class="num">1</div><div class="lbl">Rejected</div></div></div>
+        <div class="stat-tile t-blue" onclick="filterReqs('')"><div class="ico">☰</div><div><div class="num">42</div><div class="lbl">Total requests</div></div></div>
+      </div>
+      <div class="em-c-toolbar">
+        <div class="em-c-search">🔍 <input placeholder="Search request, location…" id="rq-search" oninput="doReqSearch()"></div>
+        <select class="toolbar-select" id="rq-bl" onchange="doReqSearch()"><option value="">Business line: All</option><option>Chemicals</option><option>Corporate</option><option>Fuels</option><option>Retail</option></select>
+        <select class="toolbar-select" id="rq-country" onchange="doReqSearch()"><option value="">Country: All</option><option>United States</option><option>United Kingdom</option><option>Singapore</option></select>
+        <select class="toolbar-select" id="rq-status" onchange="doReqSearch()"><option value="">Status: All</option><option>In review</option><option>Approved</option><option>Rejected</option></select>
+      </div>
       <div class="em-c-table-object"><table class="em-c-table em-c-table--striped em-c-table--condensed">
         <thead><tr><th>Request</th><th>Location / address</th><th>Business line</th><th>Trigger</th><th>Submitted</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr class="clickable" onclick="viewReq('REQ-2043')"><td>REQ-2043</td><td>Baytown Annex — 5000 Bayway Dr</td><td>Chemicals</td><td>Footprint strategy</td><td>Jun 24</td><td><span class="pill proposed">In review</span></td></tr>
-          <tr class="clickable" onclick="viewReq('REQ-2041')"><td>REQ-2041</td><td>Pegasus Place Data Ctr, Dallas</td><td>Corporate</td><td>Acquisition</td><td>Jun 22</td><td><span class="pill approved">Approved</span></td></tr>
-          <tr class="clickable" onclick="viewReq('REQ-2039')"><td>REQ-2039</td><td>Fawley Terminal Office, UK</td><td>Fuels</td><td>Work-on-behalf</td><td>Jun 20</td><td><span class="pill blocked">Rejected</span></td></tr>
-          <tr class="clickable" onclick="viewReq('REQ-2038')"><td>REQ-2038</td><td>Joliet Retail 118, IL</td><td>Retail</td><td>Business-line handover</td><td>Jun 18</td><td><span class="pill proposed">In review</span></td></tr>
-          <tr class="clickable" onclick="viewReq('REQ-2035')"><td>REQ-2035</td><td>Singapore JV Lab</td><td>Chemicals</td><td>Footprint strategy</td><td>Jun 15</td><td><span class="pill approved">Approved</span></td></tr>
+        <tbody id="req-task-list">
+          <tr class="clickable" data-status="In review" data-bl="Chemicals" data-country="United States" data-search="req-2043 baytown annex chemicals" onclick="viewReq('REQ-2043')"><td>REQ-2043</td><td>Baytown Annex — 5000 Bayway Dr</td><td>Chemicals</td><td>Footprint strategy</td><td>Jun 24</td><td><span class="pill proposed">In review</span></td></tr>
+          <tr class="clickable" data-status="Approved" data-bl="Corporate" data-country="United States" data-search="req-2041 pegasus place data ctr dallas corporate" onclick="viewReq('REQ-2041')"><td>REQ-2041</td><td>Pegasus Place Data Ctr, Dallas</td><td>Corporate</td><td>Acquisition</td><td>Jun 22</td><td><span class="pill approved">Approved</span></td></tr>
+          <tr class="clickable" data-status="Rejected" data-bl="Fuels" data-country="United Kingdom" data-search="req-2039 fawley terminal office uk fuels" onclick="viewReq('REQ-2039')"><td>REQ-2039</td><td>Fawley Terminal Office, UK</td><td>Fuels</td><td>Work-on-behalf</td><td>Jun 20</td><td><span class="pill blocked">Rejected</span></td></tr>
+          <tr class="clickable" data-status="In review" data-bl="Retail" data-country="United States" data-search="req-2038 joliet retail 118 il retail" onclick="viewReq('REQ-2038')"><td>REQ-2038</td><td>Joliet Retail 118, IL</td><td>Retail</td><td>Business-line handover</td><td>Jun 18</td><td><span class="pill proposed">In review</span></td></tr>
+          <tr class="clickable" data-status="Approved" data-bl="Chemicals" data-country="Singapore" data-search="req-2035 singapore jv lab chemicals" onclick="viewReq('REQ-2035')"><td>REQ-2035</td><td>Singapore JV Lab</td><td>Chemicals</td><td>Footprint strategy</td><td>Jun 15</td><td><span class="pill approved">Approved</span></td></tr>
         </tbody></table></div>
-      <div class="table-foot">5 of 42 onboarding requests · click a row to open the submitted request (with status)</div>
+      <div class="table-foot" id="req-list-foot">5 of 42 onboarding requests · click a row to open the submitted request (with status)</div>
     </div>
 
     <!-- tab: offboarding -->
     <div class="tabpane hidden" id="tab-off">
+      <div class="stat-strip">
+        <div class="stat-tile t-amber" onclick="filterOffs('In review')"><div class="ico">⏳</div><div><div class="num">1</div><div class="lbl">In review</div></div></div>
+        <div class="stat-tile t-green" onclick="filterOffs('Approved')"><div class="ico">✓</div><div><div class="num">1</div><div class="lbl">Approved</div></div></div>
+        <div class="stat-tile t-red" onclick="filterOffs('Rejected')"><div class="ico">✕</div><div><div class="num">1</div><div class="lbl">Rejected</div></div></div>
+        <div class="stat-tile t-blue" onclick="filterOffs('')"><div class="ico">☰</div><div><div class="num">3</div><div class="lbl">Total this quarter</div></div></div>
+      </div>
+      <div class="em-c-toolbar">
+        <div class="em-c-search">🔍 <input placeholder="Search request, location…" id="of-search" oninput="doOffSearch()"></div>
+        <select class="toolbar-select" id="of-bl" onchange="doOffSearch()"><option value="">Business line: All</option><option>Fuels</option><option>Corporate</option></select>
+        <select class="toolbar-select" id="of-country" onchange="doOffSearch()"><option value="">Country: All</option><option>United States</option><option>United Kingdom</option><option>Argentina</option></select>
+        <select class="toolbar-select" id="of-status" onchange="doOffSearch()"><option value="">Status: All</option><option>In review</option><option>Approved</option><option>Rejected</option></select>
+      </div>
       <div class="em-c-table-object"><table class="em-c-table em-c-table--striped em-c-table--condensed">
         <thead><tr><th>Request</th><th>Location / address</th><th>Business line</th><th>Reason</th><th>Target exit</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr class="clickable" onclick="viewOff('TP-1990')"><td>TP-1990</td><td>Fawley Terminal Office, UK</td><td>Fuels</td><td>Lease expiry</td><td>Jul 21, 2026</td><td><span class="pill proposed">In review</span></td></tr>
-          <tr class="clickable" onclick="viewOff('TP-1984')"><td>TP-1984</td><td>York PA Bulk Plant</td><td>Fuels</td><td>Footprint strategy</td><td>Jun 30, 2026</td><td><span class="pill approved">Approved</span></td></tr>
-          <tr class="clickable" onclick="viewOff('TP-1978')"><td>TP-1978</td><td>Buenos Aires Office</td><td>Corporate</td><td>Divestment</td><td>Sep 22, 2026</td><td><span class="pill blocked">Rejected</span></td></tr>
+        <tbody id="off-task-list">
+          <tr class="clickable" data-status="In review" data-bl="Fuels" data-country="United Kingdom" data-search="tp-1990 fawley terminal office uk fuels" onclick="viewOff('TP-1990')"><td>TP-1990</td><td>Fawley Terminal Office, UK</td><td>Fuels</td><td>Lease expiry</td><td>Jul 21, 2026</td><td><span class="pill proposed">In review</span></td></tr>
+          <tr class="clickable" data-status="Approved" data-bl="Fuels" data-country="United States" data-search="tp-1984 york pa bulk plant fuels" onclick="viewOff('TP-1984')"><td>TP-1984</td><td>York PA Bulk Plant</td><td>Fuels</td><td>Footprint strategy</td><td>Jun 30, 2026</td><td><span class="pill approved">Approved</span></td></tr>
+          <tr class="clickable" data-status="Rejected" data-bl="Corporate" data-country="Argentina" data-search="tp-1978 buenos aires office corporate" onclick="viewOff('TP-1978')"><td>TP-1978</td><td>Buenos Aires Office</td><td>Corporate</td><td>Divestment</td><td>Sep 22, 2026</td><td><span class="pill blocked">Rejected</span></td></tr>
         </tbody></table></div>
-      <div class="table-foot">3 offboarding requests · click a row to open the submitted request (with status)</div>
+      <div class="table-foot" id="off-list-foot">3 offboarding requests · click a row to open the submitted request (with status)</div>
     </div>
 
     <!-- tab: all locations -->
@@ -414,6 +438,12 @@ a{color:var(--blue);text-decoration:none}
                 <option>United States</option><option>United Kingdom</option><option>Singapore</option>
               </select>
             </div>
+            <div class="em-c-field" style="margin-bottom:0"><label class="em-c-field__label">Location group</label>
+              <select class="em-c-select" id="lf-locgroup">
+                <option value="">Physical &amp; Virtual</option>
+                <option>Physical</option><option>Virtual</option>
+              </select>
+            </div>
           </div>
           <div style="display:flex;gap:10px;margin-top:14px;align-items:center">
             <button class="em-c-btn em-c-btn--primary" onclick="doLocationSearch()">🔍 Search</button>
@@ -427,14 +457,14 @@ a{color:var(--blue);text-decoration:none}
       <div class="em-c-table-object"><table class="em-c-table em-c-table--striped em-c-table--condensed">
         <thead><tr><th>Location ID</th><th>Name</th><th>Store number</th><th>Site (GDW L6)</th><th>Country</th><th>Business line</th><th>Type</th><th>Status</th></tr></thead>
         <tbody id="all-loc-tbody">
-          <tr class="clickable" onclick="viewLocation('LOC-88231')" data-store="88231" data-name="baytown annex" data-street="5000 bayway dr" data-city="baytown" data-status="proposed" data-region="americas" data-country="united states"><td>LOC-88231</td><td>Baytown Annex</td><td>88231</td><td>Baytown Complex</td><td>United States</td><td>Chemicals</td><td>Office</td><td><span class="pill proposed">Proposed</span></td></tr>
-          <tr class="clickable" onclick="viewLocation('LOC-77012')" data-store="77012" data-name="pearland field office" data-street="2200 industrial blvd" data-city="pearland" data-status="approved" data-region="americas" data-country="united states"><td>LOC-77012</td><td>Pearland Field Office</td><td>77012</td><td>Pearland</td><td>United States</td><td>Chemicals</td><td>Office</td><td><span class="pill approved">Approved</span></td></tr>
-          <tr class="clickable" onclick="viewLocation('LOC-55021')" data-store="55021" data-name="pegasus place data ctr" data-street="8500 pegasus way" data-city="dallas" data-status="active" data-region="americas" data-country="united states"><td>LOC-55021</td><td>Pegasus Place Data Ctr</td><td>55021</td><td>Dallas HQ</td><td>United States</td><td>Corporate</td><td>Data centre</td><td><span class="pill active">Active</span></td></tr>
-          <tr class="clickable" onclick="viewLocation('LOC-41002')" data-store="41002" data-name="fawley terminal office" data-street="marine parade" data-city="fawley" data-status="offboarding" data-region="emea" data-country="united kingdom"><td>LOC-41002</td><td>Fawley Terminal Office</td><td>41002</td><td>Fawley</td><td>United Kingdom</td><td>Fuels</td><td>Office</td><td><span class="pill offboarding">Offboarding</span></td></tr>
-          <tr class="clickable" onclick="viewLocation('LOC-33019')" data-store="33019" data-name="singapore jv lab" data-street="1 jurong innovation way" data-city="jurong" data-status="operational" data-region="apac" data-country="singapore"><td>LOC-33019</td><td>Singapore JV Lab</td><td>33019</td><td>Jurong</td><td>Singapore</td><td>Chemicals</td><td>Laboratory</td><td><span class="pill operational">Operational</span></td></tr>
-          <tr class="clickable" onclick="viewLocation('LOC-11902')" data-store="11902" data-name="york pa bulk plant" data-street="900 depot rd" data-city="york" data-status="historical" data-region="americas" data-country="united states"><td>LOC-11902</td><td>York PA Bulk Plant</td><td>11902</td><td>York</td><td>United States</td><td>Fuels</td><td>Bulk plant</td><td><span class="pill historical">Historical</span></td></tr>
+          <tr class="clickable" onclick="viewLocation('LOC-88231')" data-store="88231" data-name="baytown annex" data-street="5000 bayway dr" data-city="baytown" data-status="proposed" data-region="americas" data-country="united states" data-locgroup="physical"><td>LOC-88231</td><td>Baytown Annex</td><td>88231</td><td>Baytown Complex</td><td>United States</td><td>Chemicals</td><td>Office</td><td><span class="pill proposed">Proposed</span></td></tr>
+          <tr class="clickable" onclick="viewLocation('LOC-77012')" data-store="77012" data-name="pearland field office" data-street="2200 industrial blvd" data-city="pearland" data-status="approved" data-region="americas" data-country="united states" data-locgroup="physical"><td>LOC-77012</td><td>Pearland Field Office</td><td>77012</td><td>Pearland</td><td>United States</td><td>Chemicals</td><td>Office</td><td><span class="pill approved">Approved</span></td></tr>
+          <tr class="clickable" onclick="viewLocation('LOC-55021')" data-store="55021" data-name="pegasus place data ctr" data-street="8500 pegasus way" data-city="dallas" data-status="active" data-region="americas" data-country="united states" data-locgroup="physical"><td>LOC-55021</td><td>Pegasus Place Data Ctr</td><td>55021</td><td>Dallas HQ</td><td>United States</td><td>Corporate</td><td>Data centre</td><td><span class="pill active">Active</span></td></tr>
+          <tr class="clickable" onclick="viewLocation('LOC-41002')" data-store="41002" data-name="fawley terminal office" data-street="marine parade" data-city="fawley" data-status="offboarding" data-region="emea" data-country="united kingdom" data-locgroup="physical"><td>LOC-41002</td><td>Fawley Terminal Office</td><td>41002</td><td>Fawley</td><td>United Kingdom</td><td>Fuels</td><td>Office</td><td><span class="pill offboarding">Offboarding</span></td></tr>
+          <tr class="clickable" onclick="viewLocation('LOC-33019')" data-store="33019" data-name="singapore jv lab" data-street="1 jurong innovation way" data-city="jurong" data-status="operational" data-region="apac" data-country="singapore" data-locgroup="physical"><td>LOC-33019</td><td>Singapore JV Lab</td><td>33019</td><td>Jurong</td><td>Singapore</td><td>Chemicals</td><td>Laboratory</td><td><span class="pill operational">Operational</span></td></tr>
+          <tr class="clickable" onclick="viewLocation('LOC-11902')" data-store="11902" data-name="york pa bulk plant" data-street="900 depot rd" data-city="york" data-status="historical" data-region="americas" data-country="united states" data-locgroup="physical"><td>LOC-11902</td><td>York PA Bulk Plant</td><td>11902</td><td>York</td><td>United States</td><td>Fuels</td><td>Bulk plant</td><td><span class="pill historical">Historical</span></td></tr>
         </tbody></table></div>
-      <div class="table-foot">Showing 6 of 63,412 locations · a location moves to <b>Operational</b> once its site/building is created in Nuvolo · click a row to open the record</div>
+      <div class="table-foot">Showing 6 of 63,412 locations</div>
     </div>
   </section>
 
@@ -719,13 +749,13 @@ a{color:var(--blue);text-decoration:none}
       </div></div>
       <div class="card" style="flex:1;margin:0"><div class="card__head" style="display:flex;align-items:center">Business line — values <div style="flex:1"></div><button class="em-c-btn em-c-btn--primary em-c-btn--small">Add value</button></div>
         <div class="em-c-table-object" style="border:none"><table class="em-c-table em-c-table--striped em-c-table--condensed">
-          <thead><tr><th>Code</th><th>Description</th><th>Value chain</th><th>Active</th><th>Modified</th></tr></thead>
-          <tbody>
-            <tr><td>CHE</td><td>Chemicals</td><td>Chemicals</td><td><span class="pill active">Active</span></td><td>A. Stern · Jun 20</td></tr>
-            <tr><td>FUE</td><td>Fuels</td><td>Downstream</td><td><span class="pill active">Active</span></td><td>M. Merchant · Jun 18</td></tr>
-            <tr><td>COR</td><td>Corporate</td><td>Corporate</td><td><span class="pill active">Active</span></td><td>A. Stern · May 30</td></tr>
-            <tr><td>RET</td><td>Retail</td><td>Downstream</td><td><span class="pill active">Active</span></td><td>J. Martinez · May 22</td></tr>
-            <tr><td>UPS</td><td>Upstream</td><td>Upstream</td><td><span class="pill historical">Retired</span></td><td>A. Kishan · Apr 11</td></tr>
+          <thead><tr><th>Code</th><th>Description</th><th>Value chain</th><th>Active</th><th>Modified</th><th></th></tr></thead>
+          <tbody id="mdm-value-rows">
+            <tr><td>CHE</td><td>Chemicals</td><td>Chemicals</td><td><span class="pill active">Active</span></td><td>A. Stern · Jun 20</td><td><button class="em-c-btn em-c-btn--bare edit-ico" title="Edit value" onclick="openEditValueModal(this)">✏️</button></td></tr>
+            <tr><td>FUE</td><td>Fuels</td><td>Downstream</td><td><span class="pill active">Active</span></td><td>M. Merchant · Jun 18</td><td><button class="em-c-btn em-c-btn--bare edit-ico" title="Edit value" onclick="openEditValueModal(this)">✏️</button></td></tr>
+            <tr><td>COR</td><td>Corporate</td><td>Corporate</td><td><span class="pill active">Active</span></td><td>A. Stern · May 30</td><td><button class="em-c-btn em-c-btn--bare edit-ico" title="Edit value" onclick="openEditValueModal(this)">✏️</button></td></tr>
+            <tr><td>RET</td><td>Retail</td><td>Downstream</td><td><span class="pill active">Active</span></td><td>J. Martinez · May 22</td><td><button class="em-c-btn em-c-btn--bare edit-ico" title="Edit value" onclick="openEditValueModal(this)">✏️</button></td></tr>
+            <tr><td>UPS</td><td>Upstream</td><td>Upstream</td><td><span class="pill historical">Retired</span></td><td>A. Kishan · Apr 11</td><td><button class="em-c-btn em-c-btn--bare edit-ico" title="Edit value" onclick="openEditValueModal(this)">✏️</button></td></tr>
           </tbody></table></div>
         <div class="table-foot" style="border:none">5 values · database enforces unique code + NOT NULL description</div>
       </div>
@@ -894,14 +924,14 @@ a{color:var(--blue);text-decoration:none}
       <div class="stat-tile t-amber" onclick="filterApprovals('Awaiting approval')">
         <div class="ico">⏳</div><div><div class="num">4</div><div class="lbl">Awaiting approval</div></div>
       </div>
-      <div class="stat-tile t-red" onclick="filterApprovals('Awaiting approval')">
-        <div class="ico">⚠</div><div><div class="num">1</div><div class="lbl">Aging &gt; 5 days</div></div>
+      <div class="stat-tile t-red" onclick="filterApprovals('Rejected')">
+        <div class="ico">✕</div><div><div class="num">1</div><div class="lbl">Rejected</div></div>
       </div>
       <div class="stat-tile t-green" onclick="filterApprovals('Approved')">
-        <div class="ico">✓</div><div><div class="num">2</div><div class="lbl">Approved this week</div></div>
+        <div class="ico">✓</div><div><div class="num">2</div><div class="lbl">Approved</div></div>
       </div>
       <div class="stat-tile t-blue" onclick="filterApprovals('')">
-        <div class="ico">☰</div><div><div class="num">7</div><div class="lbl">Total this quarter</div></div>
+        <div class="ico">☰</div><div><div class="num">7</div><div class="lbl">Total</div></div>
       </div>
     </div>
 
@@ -911,71 +941,17 @@ a{color:var(--blue);text-decoration:none}
       <select class="toolbar-select" id="ap-status" onchange="doApprovalSearch()"><option value="">Status: All</option><option>Awaiting approval</option><option>Approved</option><option>Rejected</option></select>
     </div>
 
-    <div class="task-list" id="approval-task-list">
-      <div class="task-row" data-type="Onboarding" data-status="Awaiting approval" data-search="req-2043 baytown annex a. stern" data-go="approval-onboarding">
-        <div class="accent amber"></div>
-        <div class="avatar" style="background:#0c69b0">AS</div>
-        <div class="main">
-          <div class="top"><span class="reqid">REQ-2043</span> Baytown Annex <span class="pill proposed">Awaiting approval</span></div>
-          <div class="meta"><span>📍 Onboarding</span><span>👤 A. Stern</span><span>📅 Submitted Jun 24</span></div>
-        </div>
-        <div class="right"><span class="age-badge">4 days</span><span class="chev">›</span></div>
-      </div>
-      <div class="task-row" data-type="Offboarding" data-status="Awaiting approval" data-search="tp-1990 fawley terminal office a. stern" data-go="approval-offboarding">
-        <div class="accent amber"></div>
-        <div class="avatar" style="background:#0c69b0">AS</div>
-        <div class="main">
-          <div class="top"><span class="reqid">TP-1990</span> Fawley Terminal Office <span class="pill offboarding">Awaiting approval</span></div>
-          <div class="meta"><span>📍 Offboarding</span><span>👤 A. Stern</span><span>📅 Submitted Jun 20</span></div>
-        </div>
-        <div class="right"><span class="age-badge stale">8 days ⚠</span><span class="chev">›</span></div>
-      </div>
-      <div class="task-row" data-type="Onboarding" data-status="Awaiting approval" data-search="req-2038 joliet retail 118 s. muteka" data-go="approval-onboarding">
-        <div class="accent amber"></div>
-        <div class="avatar" style="background:#8a6d1f">SM</div>
-        <div class="main">
-          <div class="top"><span class="reqid">REQ-2038</span> Joliet Retail 118 <span class="pill proposed">Awaiting approval</span></div>
-          <div class="meta"><span>📍 Onboarding</span><span>👤 S. Muteka</span><span>📅 Submitted Jun 18</span></div>
-        </div>
-        <div class="right"><span class="age-badge">6 days</span><span class="chev">›</span></div>
-      </div>
-      <div class="task-row" data-type="Lease start" data-status="Awaiting approval" data-search="tp-2051 baytown annex a. stern" data-go="approval-onboarding">
-        <div class="accent amber"></div>
-        <div class="avatar" style="background:#0c69b0">AS</div>
-        <div class="main">
-          <div class="top"><span class="reqid">TP-2051</span> Baytown Annex <span class="pill proposed">Awaiting approval</span></div>
-          <div class="meta"><span>📍 Lease start</span><span>👤 A. Stern</span><span>📅 Submitted Jun 15</span></div>
-        </div>
-        <div class="right"><span class="age-badge">9 days</span><span class="chev">›</span></div>
-      </div>
-      <div class="task-row" data-type="Onboarding" data-status="Approved" data-search="req-2041 pegasus place data ctr a. stern" data-go="approval-onboarding">
-        <div class="accent green"></div>
-        <div class="avatar" style="background:#0c69b0">AS</div>
-        <div class="main">
-          <div class="top"><span class="reqid">REQ-2041</span> Pegasus Place Data Ctr <span class="pill approved">Approved</span></div>
-          <div class="meta"><span>📍 Onboarding</span><span>👤 A. Stern</span><span>📅 Submitted Jun 22</span></div>
-        </div>
-        <div class="right"><span class="chev">›</span></div>
-      </div>
-      <div class="task-row" data-type="Offboarding" data-status="Approved" data-search="tp-1984 york pa bulk plant j. hamilton" data-go="approval-offboarding">
-        <div class="accent green"></div>
-        <div class="avatar" style="background:#107b57">JH</div>
-        <div class="main">
-          <div class="top"><span class="reqid">TP-1984</span> York PA Bulk Plant <span class="pill approved">Approved</span></div>
-          <div class="meta"><span>📍 Offboarding</span><span>👤 J. Hamilton</span><span>📅 Submitted Jun 18</span></div>
-        </div>
-        <div class="right"><span class="chev">›</span></div>
-      </div>
-      <div class="task-row" data-type="Offboarding" data-status="Rejected" data-search="tp-1978 buenos aires office a. ohagan" data-go="approval-offboarding">
-        <div class="accent red"></div>
-        <div class="avatar" style="background:#b12a2a">AO</div>
-        <div class="main">
-          <div class="top"><span class="reqid">TP-1978</span> Buenos Aires Office <span class="pill blocked">Rejected</span></div>
-          <div class="meta"><span>📍 Offboarding</span><span>👤 A. Ohagan</span><span>📅 Submitted Jun 12</span></div>
-        </div>
-        <div class="right"><span class="chev">›</span></div>
-      </div>
-    </div>
+    <div class="em-c-table-object"><table class="em-c-table em-c-table--striped em-c-table--condensed">
+      <thead><tr><th>Request</th><th>Location</th><th>Type</th><th>Submitted</th><th>Requestor</th><th>Status</th></tr></thead>
+      <tbody id="approval-task-list">
+        <tr class="clickable" data-type="Onboarding" data-status="Awaiting approval" data-search="req-2043 baytown annex a. stern" data-go="approval-onboarding"><td>REQ-2043</td><td>Baytown Annex</td><td>Onboarding</td><td>Jun 24</td><td>A. Stern</td><td><span class="pill proposed">Awaiting approval</span></td></tr>
+        <tr class="clickable" data-type="Offboarding" data-status="Awaiting approval" data-search="tp-1990 fawley terminal office a. stern" data-go="approval-offboarding"><td>TP-1990</td><td>Fawley Terminal Office</td><td>Offboarding</td><td>Jun 20</td><td>A. Stern</td><td><span class="pill offboarding">Awaiting approval</span></td></tr>
+        <tr class="clickable" data-type="Onboarding" data-status="Awaiting approval" data-search="req-2038 joliet retail 118 s. muteka" data-go="approval-onboarding"><td>REQ-2038</td><td>Joliet Retail 118</td><td>Onboarding</td><td>Jun 18</td><td>S. Muteka</td><td><span class="pill proposed">Awaiting approval</span></td></tr>
+        <tr class="clickable" data-type="Lease start" data-status="Awaiting approval" data-search="tp-2051 baytown annex a. stern" data-go="approval-onboarding"><td>TP-2051</td><td>Baytown Annex</td><td>Lease start</td><td>Jun 15</td><td>A. Stern</td><td><span class="pill proposed">Awaiting approval</span></td></tr>
+        <tr class="clickable" data-type="Onboarding" data-status="Approved" data-search="req-2041 pegasus place data ctr a. stern" data-go="approval-onboarding"><td>REQ-2041</td><td>Pegasus Place Data Ctr</td><td>Onboarding</td><td>Jun 22</td><td>A. Stern</td><td><span class="pill approved">Approved</span></td></tr>
+        <tr class="clickable" data-type="Offboarding" data-status="Approved" data-search="tp-1984 york pa bulk plant j. hamilton" data-go="approval-offboarding"><td>TP-1984</td><td>York PA Bulk Plant</td><td>Offboarding</td><td>Jun 18</td><td>J. Hamilton</td><td><span class="pill approved">Approved</span></td></tr>
+        <tr class="clickable" data-type="Offboarding" data-status="Rejected" data-search="tp-1978 buenos aires office a. ohagan" data-go="approval-offboarding"><td>TP-1978</td><td>Buenos Aires Office</td><td>Offboarding</td><td>Jun 12</td><td>A. Ohagan</td><td><span class="pill blocked">Rejected</span></td></tr>
+      </tbody></table></div>
     <div class="table-foot" id="approval-list-foot">7 approval requests · click a row to open the approval</div>
   </section>
 
@@ -1004,10 +980,15 @@ a{color:var(--blue);text-decoration:none}
           </div>
         </div>
 
-        <div class="card-modern"><div class="card-modern__head"><div class="ico">✅</div><div><h3>Approval decision</h3><div class="sub">Property Data Governance</div></div></div>
+        <div class="card-modern"><div class="card-modern__head"><div class="ico">✅</div><div><h3>Approval decision</h3><div class="sub" id="ap-onb-sub">Manager</div></div></div>
           <div class="card-modern__body">
             <div class="grid2">
-              <div class="em-c-field"><label class="em-c-field__label">Approver</label><input class="em-c-input" value="Property Data Governance" disabled></div>
+              <div class="em-c-field"><label class="em-c-field__label">Approver</label>
+                <div style="display:flex;gap:8px;align-items:center">
+                  <input class="em-c-input" id="ap-onb-approver" value="Manager" disabled style="flex:1">
+                  <button class="em-c-btn em-c-btn--secondary" style="white-space:nowrap" onclick="openApproverModal('onb')">Change approver</button>
+                </div>
+              </div>
               <div class="em-c-field"><label class="em-c-field__label">Decision date</label><input class="em-c-input" placeholder="mm/dd/yyyy"></div>
             </div>
             <div class="em-c-field"><label class="em-c-field__label">Comments</label><textarea class="em-c-textarea" placeholder="Optional note to the requestor…"></textarea></div>
@@ -1027,9 +1008,8 @@ a{color:var(--blue);text-decoration:none}
           <div class="card-modern__body">
             <div class="timeline">
               <div class="tl-item done"><div class="dot">✓</div><div class="t">Request submitted</div><div class="d">A. Stern · Jun 24, 2026, 9:12 AM</div></div>
-              <div class="tl-item done"><div class="dot">✓</div><div class="t">Financials completed</div><div class="d">Planning &amp; Stewardship · Jun 24, 2026, 2:40 PM</div><div class="note">Cost centre and plant code confirmed with CFS.</div></div>
-              <div class="tl-item"><div class="dot">●</div><div class="t">Awaiting governance approval</div><div class="d">Property Data Governance · assigned Jun 25</div></div>
-              <div class="tl-item pending"><div class="dot">3</div><div class="t">Transaction project opens</div><div class="d">Triggered automatically on approval</div></div>
+              <div class="tl-item"><div class="dot">●</div><div class="t">Awaiting governance approval</div><div class="d">Manager · assigned Jun 25</div></div>
+              <div class="tl-item pending"><div class="dot">2</div><div class="t">Transaction project opens</div><div class="d">Triggered automatically on approval</div></div>
             </div>
           </div>
         </div>
@@ -1066,10 +1046,15 @@ a{color:var(--blue);text-decoration:none}
           </div>
         </div>
 
-        <div class="card-modern"><div class="card-modern__head"><div class="ico">✅</div><div><h3>Approval decision</h3><div class="sub">Property Data Governance</div></div></div>
+        <div class="card-modern"><div class="card-modern__head"><div class="ico">✅</div><div><h3>Approval decision</h3><div class="sub" id="ap-off-sub">Manager</div></div></div>
           <div class="card-modern__body">
             <div class="grid2">
-              <div class="em-c-field"><label class="em-c-field__label">Approver</label><input class="em-c-input" value="Property Data Governance" disabled></div>
+              <div class="em-c-field"><label class="em-c-field__label">Approver</label>
+                <div style="display:flex;gap:8px;align-items:center">
+                  <input class="em-c-input" id="ap-off-approver" value="Manager" disabled style="flex:1">
+                  <button class="em-c-btn em-c-btn--secondary" style="white-space:nowrap" onclick="openApproverModal('off')">Change approver</button>
+                </div>
+              </div>
               <div class="em-c-field"><label class="em-c-field__label">Decision date</label><input class="em-c-input" placeholder="mm/dd/yyyy"></div>
             </div>
             <div class="em-c-field"><label class="em-c-field__label">Comments</label><textarea class="em-c-textarea"></textarea></div>
@@ -1089,7 +1074,7 @@ a{color:var(--blue);text-decoration:none}
             <div class="timeline">
               <div class="tl-item done"><div class="dot">✓</div><div class="t">Closeout initiated</div><div class="d">J. Hamilton · Jun 20, 2026</div></div>
               <div class="tl-item done"><div class="dot">✓</div><div class="t">Lease &amp; accounting objects blocked</div><div class="d">Jun 23, 2026</div></div>
-              <div class="tl-item"><div class="dot">●</div><div class="t">Awaiting governance approval</div><div class="d">Property Data Governance · assigned Jun 24</div></div>
+              <div class="tl-item"><div class="dot">●</div><div class="t">Awaiting governance approval</div><div class="d">Manager · assigned Jun 24</div></div>
               <div class="tl-item pending"><div class="dot">3</div><div class="t">Systems deactivated &amp; archived</div><div class="d">Triggered automatically on approval</div></div>
             </div>
           </div>
@@ -1107,93 +1092,41 @@ a{color:var(--blue);text-decoration:none}
 
     <div class="callout" id="rv-decision" style="display:none;margin-bottom:16px"></div>
 
-    <div class="grid2" style="align-items:start;grid-template-columns:2fr 1fr">
-      <div>
-        <div class="card-modern"><div class="card-modern__head"><div class="ico">📍</div><div><h3>Submitted request · Requestor &amp; location</h3><div class="sub">Submitted by A. Stern</div></div></div><div class="card-modern__body">
-          <div class="grid2">
-            <div class="em-c-field"><label class="em-c-field__label">Requestor</label><input class="em-c-input" value="A. Stern" disabled></div>
-            <div class="em-c-field"><label class="em-c-field__label">Type of location</label><input class="em-c-input" id="rv-type" value="Office" disabled></div>
-            <div class="em-c-field"><label class="em-c-field__label">Location group</label><input class="em-c-input" id="rv-locgroup" value="Physical" disabled></div>
-            <div class="em-c-field"><label class="em-c-field__label">Location name</label><input class="em-c-input" id="rv-name" value="Baytown Annex" disabled></div>
-            <div class="em-c-field"><label class="em-c-field__label">Average monthly rent</label><input class="em-c-input" id="rv-rent" value="$12,000" disabled></div>
-            <div class="em-c-field"><label class="em-c-field__label">Lease start date</label><input class="em-c-input" value="01/01/2026" disabled></div>
-            <div class="em-c-field"><label class="em-c-field__label">Lease end date</label><input class="em-c-input" value="12/31/2030" disabled></div>
-            <div class="em-c-field"><label class="em-c-field__label">Country</label><input class="em-c-input" id="rv-country" value="United States" disabled></div>
-            <div class="em-c-field"><label class="em-c-field__label">State / Province</label><input class="em-c-input" value="Texas" disabled></div>
-            <div class="em-c-field"><label class="em-c-field__label">City</label><input class="em-c-input" id="rv-city" value="Baytown" disabled></div>
-            <div class="em-c-field"><label class="em-c-field__label">Zip code</label><input class="em-c-input" value="77520" disabled></div>
-          </div>
-          <div class="em-c-field"><label class="em-c-field__label">Street address</label><textarea class="em-c-textarea" disabled>5000 Bayway Dr</textarea></div>
-          <div class="grid2">
-            <div class="em-c-field"><label class="em-c-field__label">Primary use</label><input class="em-c-input" id="rv-use" value="Office" disabled></div>
-            <div class="em-c-field"><label class="em-c-field__label">Business line</label><input class="em-c-input" id="rv-bl" value="Chemicals" disabled></div>
-            <div class="em-c-field"><label class="em-c-field__label">Trigger</label><input class="em-c-input" id="rv-trigger" value="Footprint strategy" disabled></div>
-          </div>
-          <div class="em-c-field em-c-field--checkbox"><input type="checkbox" disabled> <label class="em-c-field__label" style="margin:0">Joint venture</label></div>
-        </div></div>
-
-        <div class="card-modern"><div class="card-modern__head"><div class="ico" style="background:var(--purple-ghost);color:var(--purple)">💰</div><div><h3>Financials (Planning and Stewardship)</h3></div></div><div class="card-modern__body">
-          <div class="grid2">
-            <div class="em-c-field"><label class="em-c-field__label">OpEx facility company code</label><input class="em-c-input" value="1000" disabled></div>
-            <div class="em-c-field"><label class="em-c-field__label">OpEx facility cost center</label><input class="em-c-input" value="CC-4471-BAYTOWN" disabled></div>
-            <div class="em-c-field"><label class="em-c-field__label">OpEx facility source system</label><input class="em-c-input" value="SAP S/4" disabled></div>
-            <div class="em-c-field"><label class="em-c-field__label">Business area</label><input class="em-c-input" value="BA-CHEM" disabled></div>
-            <div class="em-c-field"><label class="em-c-field__label">Profit center</label><input class="em-c-input" value="PC-2043" disabled></div>
-            <div class="em-c-field"><label class="em-c-field__label">Plant code</label><input class="em-c-input" value="PL-77" disabled></div>
-            <div class="em-c-field"><label class="em-c-field__label">Lease company code</label><input class="em-c-input" value="1000" disabled></div>
-            <div class="em-c-field"><label class="em-c-field__label">Lease cost center</label><input class="em-c-input" value="CC-4471-LSE" disabled></div>
-          </div>
-        </div></div>
-
-        <div class="card-modern"><div class="card-modern__head"><div class="ico" style="background:var(--amber-ghost);color:var(--amber)">☑</div><div><h3>Action items</h3><div class="sub">Assigned to EPS Business Enablement (Budapest) for fulfillment</div></div></div><div class="card-modern__body">
-          <div class="action-item complete">
-            <div class="chk">✓</div>
-            <div class="body">
-              <div class="t">Site setup</div>
-              <div class="who"><span class="avatar sm" style="background:#107b57">ZV</span> Vajda, Zsofia · Complete</div>
-              <div class="n">Site linked to Baytown Complex (GDW L6) — no new site record needed.</div>
-            </div>
-          </div>
-          <div class="action-item complete">
-            <div class="chk">✓</div>
-            <div class="body">
-              <div class="t">Location setup (UDM)</div>
-              <div class="who"><span class="avatar sm" style="background:#107b57">ZV</span> Vajda, Zsofia · Complete</div>
-              <div class="n">Location created in UDM 2.0 as Proposed; address validated and geo-coordinates populated.</div>
-            </div>
-          </div>
-          <div class="action-item awaiting">
-            <div class="chk">!</div>
-            <div class="body">
-              <div class="t">Cost object linking</div>
-              <div class="who"><span class="avatar sm" style="background:#8a6d1f">ZV</span> Vajda, Zsofia · Awaiting</div>
-              <div class="n">Waiting on the AFE number from the upstream accountants before this can be linked.</div>
-            </div>
-          </div>
-          <div class="action-item awaiting">
-            <div class="chk">!</div>
-            <div class="body">
-              <div class="t">Real estate interest</div>
-              <div class="who"><span class="avatar sm" style="background:#8a6d1f">ZV</span> Vajda, Zsofia · Awaiting</div>
-              <div class="n">Lease abstraction in progress with Sequentra — pending signed copy from the landlord.</div>
-            </div>
-          </div>
-        </div></div>
+    <div class="card-modern"><div class="card-modern__head"><div class="ico">📍</div><div><h3>Submitted request · Requestor &amp; location</h3><div class="sub">Submitted by A. Stern</div></div></div><div class="card-modern__body">
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">Requestor</label><input class="em-c-input" value="A. Stern" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Type of location</label><input class="em-c-input" id="rv-type" value="Office" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Location group</label><input class="em-c-input" id="rv-locgroup" value="Physical" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Location name</label><input class="em-c-input" id="rv-name" value="Baytown Annex" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Average monthly rent</label><input class="em-c-input" id="rv-rent" value="$12,000" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Lease start date</label><input class="em-c-input" value="01/01/2026" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Lease end date</label><input class="em-c-input" value="12/31/2030" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Country</label><input class="em-c-input" id="rv-country" value="United States" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">State / Province</label><input class="em-c-input" value="Texas" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">City</label><input class="em-c-input" id="rv-city" value="Baytown" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Zip code</label><input class="em-c-input" value="77520" disabled></div>
       </div>
-
-      <div>
-        <div class="card-modern"><div class="card-modern__head"><div class="ico">🕒</div><div><h3>Activity</h3></div></div>
-          <div class="card-modern__body">
-            <div class="timeline">
-              <div class="tl-item done"><div class="dot">✓</div><div class="t">Request submitted</div><div class="d">A. Stern · Jun 24, 2026</div></div>
-              <div class="tl-item done"><div class="dot">✓</div><div class="t">Assigned to Business Enablement</div><div class="d">Auto-routed · Jun 24, 2026</div></div>
-              <div class="tl-item"><div class="dot">●</div><div class="t">2 of 4 action items complete</div><div class="d">Zsofia Vajda · in progress</div></div>
-              <div class="tl-item pending"><div class="dot">4</div><div class="t">Governance approval</div><div class="d">Not yet submitted</div></div>
-            </div>
-          </div>
-        </div>
+      <div class="em-c-field"><label class="em-c-field__label">Street address</label><textarea class="em-c-textarea" disabled>5000 Bayway Dr</textarea></div>
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">Primary use</label><input class="em-c-input" id="rv-use" value="Office" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Business line</label><input class="em-c-input" id="rv-bl" value="Chemicals" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Trigger</label><input class="em-c-input" id="rv-trigger" value="Footprint strategy" disabled></div>
       </div>
-    </div>
+      <div class="em-c-field em-c-field--checkbox"><input type="checkbox" disabled> <label class="em-c-field__label" style="margin:0">Joint venture</label></div>
+    </div></div>
+
+    <div class="card-modern"><div class="card-modern__head"><div class="ico" style="background:var(--purple-ghost);color:var(--purple)">💰</div><div><h3>Financials (Planning and Stewardship)</h3></div></div><div class="card-modern__body">
+      <div class="grid2">
+        <div class="em-c-field"><label class="em-c-field__label">OpEx facility company code</label><input class="em-c-input" value="1000" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">OpEx facility cost center</label><input class="em-c-input" value="CC-4471-BAYTOWN" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">OpEx facility source system</label><input class="em-c-input" value="SAP S/4" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Business area</label><input class="em-c-input" value="BA-CHEM" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Profit center</label><input class="em-c-input" value="PC-2043" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Plant code</label><input class="em-c-input" value="PL-77" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Lease company code</label><input class="em-c-input" value="1000" disabled></div>
+        <div class="em-c-field"><label class="em-c-field__label">Lease cost center</label><input class="em-c-input" value="CC-4471-LSE" disabled></div>
+      </div>
+    </div></div>
   </section>
 
 
@@ -1265,6 +1198,41 @@ a{color:var(--blue);text-decoration:none}
     </div>
   </div>
 
+  <!-- ===== Change Approver modal (opened from an Approval decision card) ===== -->
+  <div class="modal-overlay hidden" id="approver-modal">
+    <div class="modal">
+      <div class="modal__head"><h3>Change approver</h3><button class="modal__close" onclick="closeApproverModal()">×</button></div>
+      <div class="modal__body">
+        <p class="note" style="margin-top:0">Select who should review and decide on this request. The current approver will be notified of the reassignment.</p>
+        <div class="em-c-field"><label class="em-c-field__label">Search approvers</label><input class="em-c-input" id="apm-search" placeholder="Search by name or role…" oninput="renderApproverList()"></div>
+        <div class="linked-list" id="apm-list" style="max-height:280px;overflow:auto"></div>
+      </div>
+      <div class="modal__foot">
+        <button class="em-c-btn em-c-btn--tertiary" onclick="closeApproverModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Edit Value modal (opened from Metadata management value tables) ===== -->
+  <div class="modal-overlay hidden" id="edit-value-modal">
+    <div class="modal">
+      <div class="modal__head"><h3>Edit value</h3><button class="modal__close" onclick="closeEditValueModal()">×</button></div>
+      <div class="modal__body">
+        <div class="grid2">
+          <div class="em-c-field"><label class="em-c-field__label">Code<span class="req">*</span></label><input class="em-c-input" id="evm-code" disabled></div>
+          <div class="em-c-field"><label class="em-c-field__label">Description<span class="req">*</span></label><input class="em-c-input" id="evm-desc"></div>
+          <div class="em-c-field"><label class="em-c-field__label">Value chain</label><input class="em-c-input" id="evm-vc"></div>
+          <div class="em-c-field"><label class="em-c-field__label">Status</label><select class="em-c-select" id="evm-status"><option>Active</option><option>Retired</option></select></div>
+        </div>
+        <p class="note" style="margin-bottom:0">Code is the database key and can't be changed once created — retire the value and create a new one instead if the code itself is wrong.</p>
+      </div>
+      <div class="modal__foot">
+        <button class="em-c-btn em-c-btn--tertiary" onclick="closeEditValueModal()">Cancel</button>
+        <button class="em-c-btn em-c-btn--primary" onclick="saveEditValue()">Save changes</button>
+      </div>
+    </div>
+  </div>
+
   <footer class="em-c-footer">
     <div class="em-c-footer__inner">
       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="110px" height="30px" viewBox="5 0 110 30" xml:space="preserve"><path fill="#000000" d="M44.7,9.5h2.6v0.9c0.3-0.2,1.2-1.1,2.9-1.1c2,0,3.6,1.5,3.6,3.8v6H51v-5.2c0-1.3-0.6-2-1.8-2 c-1.1,0-1.8,0.7-1.8,2V19h-2.8V9.5z M73.9,14.2c0-1.3,1-2.4,2.4-2.4c1.4,0,2.4,1.1,2.4,2.4c0,1.3-1,2.4-2.4,2.4 C74.9,16.6,73.9,15.6,73.9,14.2z M71.2,14.2c0,2.7,2.2,5,5.1,5c2.9,0,5.1-2.2,5.1-5c0-2.7-2.2-5-5.1-5C73.4,9.3,71.2,11.5,71.2,14.2 z M35.7,14.2c0-1.3,1-2.4,2.4-2.4c1.4,0,2.4,1.1,2.4,2.4c0,1.3-1,2.4-2.4,2.4C36.7,16.6,35.7,15.6,35.7,14.2z M32.9,14.2 c0,2.7,2.2,5,5.1,5c2.9,0,5.1-2.2,5.1-5c0-2.7-2.2-5-5.1-5C35.1,9.3,32.9,11.5,32.9,14.2z M94.9,9.5h2.8v8.9V19h-2.8V9.5z M94.9,6 h2.8v2.4h-2.8V6z M99.9,6h2.8v12.4V19h-2.8V6z M90.4,14.2c0,1.3-1,2.4-2.4,2.4c-1.4,0-2.4-1-2.4-2.4c0-1.4,1-2.4,2.4-2.4 C89.4,11.9,90.4,12.9,90.4,14.2z M85.7,19l0-0.7c0.2,0.1,1.1,1,2.9,1c2.4,0,4.6-2.2,4.6-5c0-2.8-2.1-5-4.6-5c-1.9,0-2.8,0.9-2.9,1V6 H83v13H85.7z M19.8,19l2.9-3.8l1.8,1.9l-4.2,5.2h3.3l2.7-3.5l5,5.1h4l-7.3-7.3l5.7-7.2h-3.3l-4.2,5.4l-1.8-1.8l4.7-5.9h-3.3 l-3.2,4.1l-1.7-1.8H17l3.9,4L16.5,19H19.8z M7.3,6h8.6v2.4h-5.7v2.7h5.4v2.4h-5.4v3.1h5.7V19H7.3V6z M56,6h4.6l2.2,9.5h0.1L65.1,6 h4.5v13h-2.7V9.2h-0.1L64.3,19h-3.1l-2.4-9.8h-0.1V19H56V6z"/></svg>
@@ -1288,17 +1256,51 @@ document.addEventListener('click',e=>{
     document.querySelectorAll('#tab-onb,#tab-off,#tab-all').forEach(p=>p.classList.add('hidden'));
     document.getElementById(tb.dataset.tab).classList.remove('hidden');
     tb.parentElement.querySelectorAll('.tabbtn').forEach(b=>b.classList.toggle('em-is-active',b===tb));
-    const genericToolbar=document.getElementById('loc-toolbar');
-    if(genericToolbar) genericToolbar.classList.toggle('hidden', tb.dataset.tab==='tab-all');
   }
 });
+/* Onboarding requests tab — stat tile filter + search */
+function doReqSearch(){
+  const q=(document.getElementById('rq-search').value||'').trim().toLowerCase();
+  const bl=document.getElementById('rq-bl').value;
+  const country=document.getElementById('rq-country').value;
+  const status=document.getElementById('rq-status').value;
+  let shown=0,total=0;
+  document.querySelectorAll('#req-task-list tr').forEach(row=>{
+    total++;
+    const ok=(!q || (row.dataset.search||'').includes(q)) && (!bl || row.dataset.bl===bl)
+      && (!country || row.dataset.country===country) && (!status || row.dataset.status===status);
+    row.classList.toggle('hidden', !ok);
+    if(ok) shown++;
+  });
+  document.getElementById('req-list-foot').textContent = shown+' of 42 onboarding requests shown (demo searches these 5 sample rows) · click a row to open the submitted request';
+}
+function filterReqs(status){ document.getElementById('rq-status').value=status; doReqSearch(); }
+
+/* Offboarding tab — stat tile filter + search */
+function doOffSearch(){
+  const q=(document.getElementById('of-search').value||'').trim().toLowerCase();
+  const bl=document.getElementById('of-bl').value;
+  const country=document.getElementById('of-country').value;
+  const status=document.getElementById('of-status').value;
+  let shown=0,total=0;
+  document.querySelectorAll('#off-task-list tr').forEach(row=>{
+    total++;
+    const ok=(!q || (row.dataset.search||'').includes(q)) && (!bl || row.dataset.bl===bl)
+      && (!country || row.dataset.country===country) && (!status || row.dataset.status===status);
+    row.classList.toggle('hidden', !ok);
+    if(ok) shown++;
+  });
+  document.getElementById('off-list-foot').textContent = shown+' of '+total+' offboarding requests shown · click a row to open the submitted request';
+}
+function filterOffs(status){ document.getElementById('of-status').value=status; doOffSearch(); }
+
 /* Approvals — stat tile filter + search/type/status filter */
 function doApprovalSearch(){
   const q=(document.getElementById('ap-search').value||'').trim().toLowerCase();
   const type=document.getElementById('ap-type').value;
   const status=document.getElementById('ap-status').value;
   let shown=0,total=0;
-  document.querySelectorAll('#approval-task-list .task-row').forEach(row=>{
+  document.querySelectorAll('#approval-task-list tr').forEach(row=>{
     total++;
     const ok=(!q || (row.dataset.search||'').includes(q))
       && (!type || row.dataset.type===type)
@@ -1322,6 +1324,7 @@ function doLocationSearch(){
   const status=document.getElementById('lf-status').value.trim().toLowerCase();
   const region=document.getElementById('lf-region').value.trim().toLowerCase();
   const country=document.getElementById('lf-country').value.trim().toLowerCase();
+  const locgroup=document.getElementById('lf-locgroup').value.trim().toLowerCase();
   let shown=0, total=0;
   document.querySelectorAll('#all-loc-tbody tr').forEach(tr=>{
     total++;
@@ -1331,14 +1334,15 @@ function doLocationSearch(){
       && (!city || (tr.dataset.city||'').includes(city))
       && (!status || (tr.dataset.status||'')===status)
       && (!region || (tr.dataset.region||'')===region)
-      && (!country || (tr.dataset.country||'')===country);
+      && (!country || (tr.dataset.country||'')===country)
+      && (!locgroup || (tr.dataset.locgroup||'')===locgroup);
     tr.classList.toggle('hidden', !ok);
     if(ok) shown++;
   });
   document.getElementById('lf-result-note').textContent = shown+' of '+total+' shown (this demo only searches the 6 sample rows)';
 }
 function clearLocationSearch(){
-  ['lf-store','lf-name','lf-street','lf-city','lf-status','lf-region','lf-country'].forEach(id=>document.getElementById(id).value='');
+  ['lf-store','lf-name','lf-street','lf-city','lf-status','lf-region','lf-country','lf-locgroup'].forEach(id=>document.getElementById(id).value='');
   document.querySelectorAll('#all-loc-tbody tr').forEach(tr=>tr.classList.remove('hidden'));
   document.getElementById('lf-result-note').textContent='';
 }
@@ -1548,6 +1552,70 @@ document.addEventListener('click', e=>{
 /* ===== Building create modal ===== */
 function openBuildingModal(){ document.getElementById('bldg-modal').classList.remove('hidden'); }
 function closeBuildingModal(){ document.getElementById('bldg-modal').classList.add('hidden'); }
+
+/* ===== Change Approver modal ===== */
+const APPROVER_DIRECTORY = [
+  {name:'A. Mercer', role:'Manager'},
+  {name:'D. Okafor', role:'Manager'},
+  {name:'R. Ibarra', role:'Senior Manager'},
+  {name:'T. Lindqvist', role:'Manager'},
+  {name:'S. Muteka', role:'Manager'},
+  {name:'J. Falkner', role:'Director'}
+];
+let approverCtx = null;
+function openApproverModal(ctx){
+  approverCtx = ctx;
+  document.getElementById('apm-search').value = '';
+  renderApproverList();
+  document.getElementById('approver-modal').classList.remove('hidden');
+}
+function closeApproverModal(){ document.getElementById('approver-modal').classList.add('hidden'); }
+function renderApproverList(){
+  const q = (document.getElementById('apm-search').value||'').trim().toLowerCase();
+  const box = document.getElementById('apm-list');
+  const matches = APPROVER_DIRECTORY.filter(a => !q || a.name.toLowerCase().includes(q) || a.role.toLowerCase().includes(q));
+  box.innerHTML = matches.length ? matches.map(a =>
+    '<div class="linked-item" style="cursor:pointer" onclick="pickApprover(\''+a.name.replace(/'/g,"\\'")+'\')">'+
+      '<div class="ico">'+a.name.split(' ').map(s=>s[0]).join('')+'</div>'+
+      '<div class="meta"><div class="t">'+a.name+'</div><div class="s">'+a.role+'</div></div>'+
+      '<span class="pill pending">Select</span>'+
+    '</div>'
+  ).join('') : '<div class="linked-empty">No matching approvers.</div>';
+}
+function pickApprover(name){
+  if(approverCtx === 'onb'){
+    document.getElementById('ap-onb-approver').value = name;
+    document.getElementById('ap-onb-sub').textContent = name;
+  } else if(approverCtx === 'off'){
+    document.getElementById('ap-off-approver').value = name;
+    document.getElementById('ap-off-sub').textContent = name;
+  }
+  closeApproverModal();
+}
+
+/* ===== Edit Value modal (Metadata management) ===== */
+let editValueRow = null;
+function openEditValueModal(btn){
+  editValueRow = btn.closest('tr');
+  const cells = editValueRow.querySelectorAll('td');
+  document.getElementById('evm-code').value = cells[0].textContent.trim();
+  document.getElementById('evm-desc').value = cells[1].textContent.trim();
+  document.getElementById('evm-vc').value = cells[2].textContent.trim();
+  const pill = cells[3].querySelector('.pill');
+  document.getElementById('evm-status').value = pill && pill.classList.contains('historical') ? 'Retired' : 'Active';
+  document.getElementById('edit-value-modal').classList.remove('hidden');
+}
+function closeEditValueModal(){ document.getElementById('edit-value-modal').classList.add('hidden'); editValueRow = null; }
+function saveEditValue(){
+  if(!editValueRow) return;
+  const cells = editValueRow.querySelectorAll('td');
+  cells[1].textContent = document.getElementById('evm-desc').value;
+  cells[2].textContent = document.getElementById('evm-vc').value;
+  const isActive = document.getElementById('evm-status').value === 'Active';
+  cells[3].innerHTML = isActive ? '<span class="pill active">Active</span>' : '<span class="pill historical">Retired</span>';
+  cells[4].textContent = 'A. Stern · just now';
+  closeEditValueModal();
+}
 function saveNewBuilding(){
   const name=document.getElementById('bm-name').value.trim()||'New building';
   const desc=document.getElementById('bm-desc').value.trim();
@@ -1563,10 +1631,10 @@ function saveNewBuilding(){
 /* submitted onboarding request viewer */
 const REQS={
   'REQ-2043':{name:'Baytown Annex',type:'Office',use:'Office',bl:'Chemicals',country:'United States',city:'Baytown',rent:'$12,000',trigger:'Footprint strategy',status:'In review',pill:'proposed',decision:''},
-  'REQ-2041':{name:'Pegasus Place Data Ctr',type:'Data centre',use:'Data centre',bl:'Corporate',country:'United States',city:'Dallas',rent:'$48,000',trigger:'Acquisition',status:'Approved',pill:'approved',decision:'Approved by Property Data Governance \u00b7 23 Jun 2026 \u2014 transaction project TP-2041 opened.'},
+  'REQ-2041':{name:'Pegasus Place Data Ctr',type:'Data centre',use:'Data centre',bl:'Corporate',country:'United States',city:'Dallas',rent:'$48,000',trigger:'Acquisition',status:'Approved',pill:'approved',decision:'Approved by Manager \u00b7 23 Jun 2026 \u2014 transaction project TP-2041 opened.'},
   'REQ-2039':{name:'Fawley Terminal Office',type:'Office',use:'Office',bl:'Fuels',country:'United Kingdom',city:'Fawley',rent:'\u00a39,500',trigger:'Work-on-behalf',status:'Rejected',pill:'blocked',decision:'Rejected \u00b7 21 Jun 2026 \u2014 duplicate of existing location LOC-41002.'},
   'REQ-2038':{name:'Joliet Retail 118',type:'Retail',use:'Retail',bl:'Retail',country:'United States',city:'Joliet',rent:'$6,900',trigger:'Business-line handover',status:'In review',pill:'proposed',decision:''},
-  'REQ-2035':{name:'Singapore JV Lab',type:'Laboratory',use:'Laboratory',bl:'Chemicals',country:'Singapore',city:'Jurong',rent:'S$21,050',trigger:'Footprint strategy',status:'Approved',pill:'approved',decision:'Approved by Property Data Governance \u00b7 16 Jun 2026 \u2014 transaction project opened.'}
+  'REQ-2035':{name:'Singapore JV Lab',type:'Laboratory',use:'Laboratory',bl:'Chemicals',country:'Singapore',city:'Jurong',rent:'S$21,050',trigger:'Footprint strategy',status:'Approved',pill:'approved',decision:'Approved by Manager \u00b7 16 Jun 2026 \u2014 transaction project opened.'}
 };
 function viewReq(id){
   const r=REQS[id]; if(!r) return;
@@ -1586,7 +1654,7 @@ function viewReq(id){
 /* submitted offboarding request viewer */
 const OFFS={
   'TP-1990':{loc:'Fawley Terminal Office',id:'LOC-41002',bl:'Fuels',reason:'Lease expiry',tenure:'Leased (CBRE)',exit:'Jul 21, 2026',lease:'SEQ-33019 \u00b7 CBRE',pm:'J. Hamilton',note:'Lease expires with no renewal intent; consolidate into Southampton hub.',status:'In review',pill:'proposed',decision:''},
-  'TP-1984':{loc:'York PA Bulk Plant',id:'LOC-11902',bl:'Fuels',reason:'Footprint strategy',tenure:'Owned (divestment)',exit:'Jun 30, 2026',lease:'\u2014',pm:'J. Hamilton',note:'Site surplus to footprint strategy; begin divestment.',status:'Approved',pill:'approved',decision:'Approved by Property Data Governance \u00b7 24 Jun 2026 \u2014 offboarding project TP-1984 now in closeout.'},
+  'TP-1984':{loc:'York PA Bulk Plant',id:'LOC-11902',bl:'Fuels',reason:'Footprint strategy',tenure:'Owned (divestment)',exit:'Jun 30, 2026',lease:'\u2014',pm:'J. Hamilton',note:'Site surplus to footprint strategy; begin divestment.',status:'Approved',pill:'approved',decision:'Approved by Manager \u00b7 24 Jun 2026 \u2014 offboarding project TP-1984 now in closeout.'},
   'TP-1978':{loc:'Buenos Aires Office',id:'LOC-60011',bl:'Corporate',reason:'Divestment',tenure:'Leased (CBRE)',exit:'Sep 22, 2026',lease:'SEQ-70233 \u00b7 CBRE',pm:'A. Ohagan',note:'Exit local office as part of regional consolidation.',status:'Rejected',pill:'blocked',decision:'Rejected \u00b7 20 Jun 2026 \u2014 active lease obligations remain; returned to Commercial PM.'}
 };
 function viewOff(id){
