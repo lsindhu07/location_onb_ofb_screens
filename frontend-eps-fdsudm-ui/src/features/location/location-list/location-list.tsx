@@ -38,25 +38,14 @@ export function LocationList() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // allSettled: a dead /countries or /zones endpoint must not stop the
-        // locations table itself from rendering (Promise.all would reject the
-        // whole batch and leave isLoading stuck true forever).
-        Promise.allSettled([
+        Promise.all([
             LocationApiService.getLocationList(),
             MasterDataApiService.getCountries(),
             MasterDataApiService.getZones(),
-        ]).then(([rowsResult, countriesResult, zonesResult]) => {
-            if (rowsResult.status === "fulfilled") {
-                setLocationRows(rowsResult.value);
-            } else {
-                console.error("Failed to load locations:", rowsResult.reason);
-            }
-            if (countriesResult.status === "fulfilled") {
-                setCountryOptions(toOptions(countriesResult.value, ["country_id", "id"], ["country_name", "name"]));
-            }
-            if (zonesResult.status === "fulfilled") {
-                setZoneOptions(toOptions(zonesResult.value, ["enterprise_sub_zone_id"], ["enterprise_sub_zone_name"]));
-            }
+        ]).then(([rows, countries, zones]) => {
+            setLocationRows(rows);
+            setCountryOptions(toOptions(countries, ["country_id", "id"], ["country_name", "name"]));
+            setZoneOptions(toOptions(zones, ["enterprise_sub_zone_id"], ["enterprise_sub_zone_name"]));
             setIsLoading(false);
         });
     }, []);
