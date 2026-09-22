@@ -25,6 +25,18 @@ export function toOptions(records: LookupRecord[], idKeys: string[], nameKeys: s
         .filter((option): option is DynamicFormOption => option !== undefined);
 }
 
+// A single dead lookup endpoint (e.g. /countries, which doesn't exist on this
+// backend yet) must not stop the Location Details tab from rendering at all —
+// so this settles every call independently and defaults a failed one to [],
+// instead of Promise.all, which would leave the whole tab spinning forever.
+async function settleToRows(call: () => Promise<LookupRecord[]>, label: string): Promise<LookupRecord[]> {
+    const result = await Promise.allSettled([call()]);
+    const [outcome] = result;
+    if (outcome.status === "fulfilled") return outcome.value;
+    console.error(`Location Details lookup failed (${label}):`, outcome.reason);
+    return [];
+}
+
 export async function loadLocationDetailLookups(): Promise<LocationDetailLookups> {
     const [
         operationStatuses,
@@ -36,14 +48,14 @@ export async function loadLocationDetailLookups(): Promise<LocationDetailLookups
         fuelBrands,
         storeBrands,
     ] = await Promise.all([
-        MasterDataApiService.getOperationStatuses(),
-        MasterDataApiService.getBusinessLines(),
-        MasterDataApiService.getLocationPrimaryUseTypes(),
-        MasterDataApiService.getLocationOperationTypes(),
-        MasterDataApiService.getContacts(),
-        MasterDataApiService.getCountries(),
-        MasterDataApiService.getFuelBrands(),
-        MasterDataApiService.getStoreBrands(),
+        settleToRows(MasterDataApiService.getOperationStatuses, "operation statuses"),
+        settleToRows(MasterDataApiService.getBusinessLines, "business lines"),
+        settleToRows(MasterDataApiService.getLocationPrimaryUseTypes, "primary use types"),
+        settleToRows(MasterDataApiService.getLocationOperationTypes, "operation types"),
+        settleToRows(MasterDataApiService.getContacts, "contacts"),
+        settleToRows(MasterDataApiService.getCountries, "countries"),
+        settleToRows(MasterDataApiService.getFuelBrands, "fuel brands"),
+        settleToRows(MasterDataApiService.getStoreBrands, "store brands"),
     ]);
 
     const contactOptions = contacts

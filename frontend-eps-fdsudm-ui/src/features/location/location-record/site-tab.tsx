@@ -19,6 +19,7 @@ type SiteTabProps = {
 export function SiteTab({ locationId }: SiteTabProps) {
     const [site, setSite] = useState<SiteSummary | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [loadError, setLoadError] = useState<string | null>(null);
     const [countryNamesById, setCountryNamesById] = useState<Record<string, string>>({});
 
     const [query, setQuery] = useState("");
@@ -27,20 +28,35 @@ export function SiteTab({ locationId }: SiteTabProps) {
     const [isLinking, setIsLinking] = useState(false);
 
     useEffect(() => {
-        Promise.all([
+        setLoadError(null);
+        // allSettled, not all: a failing /countries call (used only to show a
+        // country *name* instead of a raw id) must not stop the site itself —
+        // the one call that actually matters — from ever rendering.
+        Promise.allSettled([
             LocationApiService.getLocationSite(locationId),
             MasterDataApiService.getCountries(),
-        ]).then(([currentSite, countries]) => {
-            setSite(currentSite ?? null);
-            const map: Record<string, string> = {};
-            countries.forEach((country) => {
-                const id = country.country_id ?? country.id;
-                const name = country.country_name ?? country.name;
-                if (id !== undefined && id !== null) {
-                    map[String(id)] = String(name ?? id);
-                }
-            });
-            setCountryNamesById(map);
+        ]).then(([siteResult, countriesResult]) => {
+            if (siteResult.status === "fulfilled") {
+                setSite(siteResult.value ?? null);
+            } else {
+                setLoadError(
+                    siteResult.reason instanceof Error ? siteResult.reason.message : "Failed to load the linked site."
+                );
+            }
+
+            if (countriesResult.status === "fulfilled") {
+                const map: Record<string, string> = {};
+                countriesResult.value.forEach((country) => {
+                    const id = country.country_id ?? country.id;
+                    const name = country.country_name ?? country.name;
+                    if (id !== undefined && id !== null) {
+                        map[String(id)] = String(name ?? id);
+                    }
+                });
+                setCountryNamesById(map);
+            }
+            // countries failing silently falls back to showing the raw country_id below
+
             setIsLoading(false);
         });
     }, [locationId]);
@@ -79,6 +95,10 @@ export function SiteTab({ locationId }: SiteTabProps) {
 
     if (isLoading) {
         return <LoadingSpinner size="m" />;
+    }
+
+    if (loadError) {
+        return <div className={styles.errorBanner}>Couldn't load the Site tab: {loadError}</div>;
     }
 
     const columns: DataTableColumn<SiteSummary>[] = [

@@ -185,17 +185,25 @@ export function LocationCreate({ locationId }: LocationFormProps) {
 
     const [location, setLocation] = useState<LocationRecord>(emptyLocation);
     const [isLoading, setIsLoading] = useState(isEditMode);
+    const [loadError, setLoadError] = useState<string | null>(null);
 
     useEffect(() => {
         if (!locationId) {
             return;
         }
-        LocationApiService.getLocationById(locationId).then((existingLocation) => {
-            if (existingLocation) {
-                setLocation(existingLocation);
-            }
-            setIsLoading(false);
-        });
+        setLoadError(null);
+        LocationApiService.getLocationById(locationId)
+            .then((existingLocation) => {
+                if (existingLocation) {
+                    setLocation(existingLocation);
+                }
+            })
+            .catch((error) => {
+                setLoadError(error instanceof Error ? error.message : "Failed to load this location.");
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
     }, [locationId]);
 
     const formValues = Object.fromEntries(
@@ -232,7 +240,13 @@ export function LocationCreate({ locationId }: LocationFormProps) {
         return (
             <div style={{ display: "grid", width: "100%", gap: "1.5rem" }} className={styles.pageShell}>
                 <PageHeaderWrapper title="Edit Location" subtitle="Update the details for this location." />
-                <LocationRecordTabs locationId={locationId} location={location} onLocationSaved={setLocation} />
+                {loadError ? (
+                    <div style={{ padding: "10px 14px", border: "1px solid #da291c", background: "#fdeceb", color: "#da291c", borderRadius: 2 }}>
+                        Couldn't load this location: {loadError}
+                    </div>
+                ) : (
+                    <LocationRecordTabs locationId={locationId} location={location} onLocationSaved={setLocation} />
+                )}
             </div>
         );
     }

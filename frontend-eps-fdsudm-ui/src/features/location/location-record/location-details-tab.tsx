@@ -78,7 +78,9 @@ export function LocationDetailsTab({ locationId, location, onSaved }: LocationDe
 
         if (fieldName === "country") {
             setValues((current) => ({ ...current, country_subdivision_id: "" }));
-            loadSubdivisionOptions(value).then(setSubdivisionOptions);
+            loadSubdivisionOptions(value)
+                .then(setSubdivisionOptions)
+                .catch((error) => console.error("Failed to load State/Province options:", error));
         }
     };
 
