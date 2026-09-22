@@ -207,7 +207,7 @@ export function LocationCreate({ locationId }: LocationFormProps) {
     }, [locationId]);
 
     const formValues = Object.fromEntries(
-        locationFieldKeys.map((fieldName) => [fieldName, String((location as Record<string, string>)[fieldName] ?? "")])
+        locationFieldKeys.map((fieldName) => [fieldName, String((location as unknown as Record<string, string>)[fieldName] ?? "")])
     ) as Record<string, string>;
 
     const handleDynamicFieldChange = (fieldName: string, value: string) => {
