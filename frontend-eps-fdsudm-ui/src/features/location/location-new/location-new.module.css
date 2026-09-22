@@ -1,0 +1,44 @@
+.pageShell {
+  display: grid;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  gap: 0;
+  align-content: start;
+}
+
+.formShell {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.formSection {
+  padding: 5px;
+  margin: 0;
+}
+
+.formActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+@media (max-width: 900px) {
+  .pageShell {
+    width: 100%;
+    padding: 0 12px 12px;
+  }
+
+  .formShell {
+    gap: 10px;
+  }
+}

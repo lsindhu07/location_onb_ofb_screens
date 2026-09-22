@@ -1,0 +1,93 @@
+{
+  "common": {
+    "headerTitle": "Fds Udm Ui",
+    "footer": {
+      "privacyPolicy": "Privacy Policy"
+    },
+    "badges": {
+      "comingSoon": "Coming soon"
+    },
+    "buttons": {
+      "openModule": "Open module"
+    }
+  },
+  "home": {
+    "brand": {
+      "code": "U2",
+      "title": "UDM 2.0",
+      "subtitle": "UNIFIED DATA MANAGEMENT"
+    },
+    "hero": {
+      "changeRequestButton": "Change Request",
+      "heading": "Unified Data Management 2.0",
+      "description": "A unified platform to manage real estate data, project pipelines, and financial planning across Property Operations, Retail Asset Management (RAM), and Non-Operating Surplus Sites (NOSS).",
+      "documentationButton": "Browse documentation"
+    },
+    "modulesSection": {
+      "modules": [
+        {
+          "headline": "Location",
+          "url": "/location",
+          "description": "Standardize how sites are requested, onboarded, and closed out across all portfolios and organize the data hierarchy."
+        },
+        {
+          "headline": "Planning",
+          "description": "Plan CAPEX, OPEX, and stewardship activities with shared calendars and approvals that keep every business line aligned."
+        },
+        {
+          "headline": "Portfolio Development",
+          "description": "See the full picture across sites, leases, and projects to keep footprint and roadmap decisions aligned."
+        },
+        {
+          "headline": "Projects",
+          "description": "Track transactions, leases, and capital projects together, from evaluation through execution."
+        },
+        {
+          "headline": "Real Estate",
+          "description": "Manage leases, parcels, and site/building records that make up the physical real estate footprint."
+        },
+        {
+          "headline": "Administration",
+          "description": "Manage reference data, personas, and system configuration that keep every other module running consistently."
+        }
+      ]
+    },
+    "quickLinksSection": {
+      "title": "Quick Links",
+      "requestForms": {
+        "title": "Request Forms",
+        "links": [
+          { "icon": "map", "label": "Create Location", "url": "/location" },
+          { "icon": "map-pin", "label": "Create Site", "url": "#" },
+          {
+            "icon": "building",
+            "label": "New Real Estate Transaction",
+            "url": "#",
+            "badge": "comingSoon"
+          },
+          {
+            "icon": "folder",
+            "label": "New Project",
+            "url": "#",
+            "badge": "comingSoon"
+          },
+          {
+            "icon": "pencil",
+            "label": "Rename / Restructure Request",
+            "url": "#",
+            "badge": "comingSoon"
+          }
+        ]
+      },
+      "favourites": {
+        "title": "Favourites",
+        "links": [
+          { "label": "Location", "url": "/location" },
+          { "label": "Site", "url": "#" },
+          { "label": "Master Data Management", "url": "#" },
+          { "label": "Source System Management", "url": "#" }
+        ]
+      }
+    }
+  }
+}

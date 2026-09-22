@@ -1,0 +1,163 @@
+.formRoot {
+  display: grid;
+  width: 100%;
+  gap: 12px;
+}
+
+.section {
+  margin: 0;
+  min-width: 0;
+  border: 1px solid #d9dfe2;
+  border-radius: 4px;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: none;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin: 0;
+  padding: 14px 18px;
+  border-bottom: 1px solid #d9dfe2;
+  font-size: 17px;
+  font-weight: bold;
+  color: #1a1a1a;
+  line-height: 1.3;
+}
+
+.sectionHeader::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #d8d8d8;
+  box-shadow: inset 0 0 0 1px #b8bec3;
+  flex-shrink: 0;
+}
+
+.sectionHeaderWithIcon::before {
+  display: none;
+}
+
+.sectionHeaderIcon {
+  flex-shrink: 0;
+}
+
+.sectionFieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.sectionFieldset :global(.em-c-fieldset__legend) {
+  margin: 0;
+}
+
+.sectionBody {
+  display: grid;
+  gap: 0;
+  padding: 18px 18px 10px;
+  background: #fff;
+}
+
+.twoColumnGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 20px;
+  align-items: start;
+}
+
+.fieldSlot {
+  min-width: 0;
+  margin-bottom: 10px;
+}
+
+.fieldFullWidth {
+  grid-column: 1 / -1;
+}
+
+.inputField {
+  width: 100%;
+}
+
+.formRoot :global(.em-c-icon--medium) {
+  width: 1rem;
+  height: 1rem;
+}
+
+.inputField:global(.em-c-field),
+.inputField :global(.em-c-field),
+.inputField :global(.em-c-field__body) {
+  margin: 0 !important;
+}
+
+.inputField :global(.em-c-field__label) {
+  display: block;
+  font-size: 13px;
+  color: #111111;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.inputField :global(.em-c-field__required) {
+  color: #b12a2a;
+  font-weight: 700;
+  margin-right: 2px;
+}
+
+.inputField :global(.em-c-input),
+.inputField :global(.em-c-select) {
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  min-height: 40px;
+  border: 1px solid #c5c9cc;
+  border-radius: 4px;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.2;
+  background-color: #fff;
+  color: #111111;
+  box-shadow: none;
+}
+
+.inputField :global(.em-c-field__note) {
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+@media (max-width: 900px) {
+  .sectionBody {
+    padding: 10px;
+  }
+
+  .sectionHeader {
+    padding: 9px 12px;
+  }
+
+  .twoColumnGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fieldFullWidth {
+    grid-column: auto;
+  }
+
+  .actions {
+    justify-content: flex-end;
+  }
+
+  .actions :global(.em-c-btn) {
+    flex: 0 0 auto;
+  }
+}

@@ -1,0 +1,6 @@
+@eps_fdsudm_api_HostAddress = http://localhost:5248
+
+GET {{eps_fdsudm_api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

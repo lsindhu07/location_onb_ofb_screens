@@ -1,0 +1,23 @@
+{
+  "DataSource": "Server=tcp:sqldb-fds-ussc-dev.database.windows.net,1433;Initial Catalog=sqldb-fds-ussc-udm-dev;",
+  "Provider": "Microsoft.EntityFrameworkCore.SqlServer",
+  "ContextName": "AppDbContext",
+  "ContextDirectory": ".",
+  "OutputDirectory": "Entities",
+  "ContextNamespace": "eps-fdsudm-api.Config",
+  "Namespace": "eps-fdsudm-api.Entities",
+  "Schemas": "dbo",
+  "Tables": "site",
+  "ProjectDirectory": ".",
+  "StartupProjectDirectory": ".",
+  "TargetFramework": null,
+  "Configuration": "--use-database-name --no-onconfiguring",
+  "TargetRuntime": null,
+  "DataAnnotations": false,
+  "UseDatabaseNames": false,
+  "NoOnConfiguring": true,
+  "NoPluralize": true,
+  "Force": true,
+  "NoBuild": false,
+  "Verbose": false
+}

@@ -1,0 +1,8 @@
+ignore:
+  finding:
+    files:
+      - file: 'Dockerfile'
+        reason: 'This is a false positive because $NEXUS_TOKEN is not a secret but instead it reference to OpenShift environment variables.'
+    types:
+      - type: WEAK_MESSAGE_DIGEST_MD5
+        reason: 'Source code did not contain SourceFile or vulnerable code that mentioned in https://find-sec-bugs.github.io/bugs.htm#WEAK_MESSAGE_DIGEST_MD5'
