@@ -1,0 +1,21 @@
+.dataTable :global(.em-c-table) {
+  border: 1px solid var(--std-semantic-color-border-base, #d5d5d5);
+}
+
+.dataTable :global(.em-c-table__body .em-c-table__row:nth-child(even)) {
+  background: #f7f9fa;
+}
+
+.dataTable :global(.em-c-table__row:hover),
+.dataTable :global(.em-c-table__row:focus) {
+  background: none;
+  mix-blend-mode: normal;
+}
+
+.dataTable :global(.em-js-table-row-selectable) {
+  cursor: pointer;
+}
+
+.clickableRows :global(.em-c-table__row) {
+  cursor: pointer;
+}

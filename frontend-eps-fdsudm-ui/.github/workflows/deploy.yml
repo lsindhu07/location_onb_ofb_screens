@@ -1,0 +1,121 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      env_name:
+        required: true
+        type: string
+      app_name:
+        required: true
+        type: string
+      artifact_name:
+        required: false
+        type: string
+        default: 'build-output'
+      run_id:
+        required: false
+        type: string
+        default: ''
+      build_workflow_name:
+        required: false
+        type: string
+        default: 'build-deploy.yml'
+    secrets:
+      ARM_CLIENT_ID:
+        required: true
+      ARM_SUBSCRIPTION_ID:
+        required: true
+      ARM_TENANT_ID:
+        required: true
+  workflow_dispatch:
+    inputs:
+      env_name:
+        required: true
+        type: choice
+        default: 'development'
+        options:
+          - development
+          - production
+      app_name:
+        required: true
+        type: string
+        default: 'fds-udm-ui-dev'
+      artifact_name:
+        required: false
+        type: string
+        default: 'build-output'
+      run_id:
+        description: 'Specific run ID to download artifact from (optional)'
+        required: false
+        type: string
+        default: ''
+      build_workflow_name:
+        required: false
+        type: string
+        default: 'build-deploy.yml'
+
+permissions:
+  actions: read
+  contents: read
+  id-token: write
+
+
+jobs:
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+    steps:
+    # if run_id is passed use that specific, otherwise use the last successful build
+      - name: Download artifact
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -n "${{ inputs.run_id }}" ]; then
+            RUN_ID="${{ inputs.run_id }}"
+          else
+            RUN_ID=$(gh api \
+              "repos/${{ github.repository }}/actions/workflows/${{ inputs.build_workflow_name }}/runs?status=success&per_page=1" \
+              --jq '.workflow_runs[0].id')
+          fi
+
+          ARTIFACT_ID=$(gh api \
+            "repos/${{ github.repository }}/actions/runs/$RUN_ID/artifacts" \
+            --jq '.artifacts[] | select(.name == "${{ inputs.artifact_name }}") | .id')
+            
+          echo "RUN_ID: $RUN_ID"
+          echo "ARTIFACT_ID: $ARTIFACT_ID"
+          
+          gh api \
+            "repos/${{ github.repository }}/actions/artifacts/$ARTIFACT_ID/zip" \
+            > artifact.zip
+
+          unzip artifact.zip -d $GITHUB_WORKSPACE/build
+
+      - name: Create Zip
+        run: |
+          cd ${{ github.workspace }}/build
+          zip -r ${{ runner.temp }}/${{ github.sha }}.zip *
+          ls -lh ${{ runner.temp }}/${{ github.sha }}.zip
+
+      - name: Az CLI login
+        if: github.event_name != 'pull_request'
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+
+      - name: Deploy to App Service
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ inputs.app_name }}
+          package: ${{ runner.temp }}/${{ github.sha }}.zip
+
+      - name: Logout Azure
+        run: az logout

@@ -1,0 +1,31 @@
+name: Pipeline
+
+on:
+  push:
+    branches: [main]
+permissions:
+  id-token: write
+  contents: read
+  packages: read
+  actions: read
+  security-events: write
+
+env:
+  APP_NAME: eps-fdsudm-ui
+  RESOURCE_GROUP_NAME: rg-eps-fdsudm-ussc-dev
+  APP_CLIENT_ID: ebcad0e9-0a17-428e-91c5-e3b2cae406e3
+  APP_URL: 
+  APP_SUBSCRIPTION_ID: d1ee1acd-bc7a-4bc4-a787-938c49a83906
+  APP_TENANT_ID: d1ee1acd-bc7a-4bc4-a787-938c49a83906
+  ENV_NAME: dev
+  NODE_VERSION: 20.x
+  TFE_HOSTNAME: terraform.xom.cloud
+  APP_LANGUAGE: typescript
+
+jobs:
+  __components.workflows/jobs/erebor.yml__
+
+  __components.workflows/jobs/terraform.yml__
+  __components.workflows/jobs/app-service-node-build.yml__
+  __components.workflows/jobs/app-service-node-deploy.yml__
+  __components.workflows/jobs/heimdall-web.yml__

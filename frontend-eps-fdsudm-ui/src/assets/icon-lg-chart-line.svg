@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="118.363" height="110.454" viewBox="0 0 118.363 110.454">
+  <g id="icon-lg-chart-line" transform="translate(2.5 2.5)">
+    <path id="Path_19" data-name="Path 19" d="M115.363,109.454H2V4" transform="translate(-2 -4)" fill="none" stroke="#021834" stroke-linecap="square" stroke-linejoin="round" stroke-width="5"/>
+    <ellipse id="Ellipse_3" data-name="Ellipse 3" cx="8.308" cy="7.669" rx="8.308" ry="7.669" transform="translate(10.226 71.581)" fill="none" stroke="#021834" stroke-linecap="square" stroke-linejoin="round" stroke-width="5"/>
+    <circle id="Ellipse_4" data-name="Ellipse 4" cx="7.669" cy="7.669" r="7.669" transform="translate(39.625 37.069)" fill="none" stroke="#021834" stroke-linecap="square" stroke-linejoin="round" stroke-width="5"/>
+    <circle id="Ellipse_5" data-name="Ellipse 5" cx="7.669" cy="7.669" r="7.669" transform="translate(71.581 44.738)" fill="none" stroke="#021834" stroke-linecap="square" stroke-linejoin="round" stroke-width="5"/>
+    <circle id="Ellipse_6" data-name="Ellipse 6" cx="8.308" cy="8.308" r="8.308" transform="translate(89.476 12.782)" fill="none" stroke="#021834" stroke-linecap="square" stroke-linejoin="round" stroke-width="5"/>
+    <line id="Line_8" data-name="Line 8" x1="16.617" y1="7.669" transform="translate(54.964 44.738)" fill="none" stroke="#021834" stroke-linecap="square" stroke-linejoin="round" stroke-width="5"/>
+    <line id="Line_9" data-name="Line 9" x1="7.669" y2="17.895" transform="translate(84.363 29.399)" fill="none" stroke="#021834" stroke-linecap="square" stroke-linejoin="round" stroke-width="5"/>
+    <line id="Line_10" data-name="Line 10" x1="15.339" y2="21.73" transform="translate(24.286 52.407)" fill="none" stroke="#021834" stroke-linecap="square" stroke-linejoin="round" stroke-width="5"/>
+  </g>
+</svg>

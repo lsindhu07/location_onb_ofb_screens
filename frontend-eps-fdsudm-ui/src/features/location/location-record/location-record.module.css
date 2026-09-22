@@ -1,0 +1,61 @@
+.tabPanel {
+  display: grid;
+  gap: 16px;
+  padding: 16px 4px;
+}
+
+.comboWrap {
+  position: relative;
+  max-width: 480px;
+}
+
+.comboList {
+  position: absolute;
+  z-index: 10;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin: 4px 0 0;
+  padding: 4px;
+  list-style: none;
+  background: #fff;
+  border: 1px solid #dfe3e6;
+  border-radius: 2px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.comboItem {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+}
+
+.comboItem:hover,
+.comboItem:focus {
+  background: #f4f6f7;
+}
+
+.comboItem span {
+  color: #63666a;
+  margin-left: 4px;
+}
+
+.errorBanner {
+  padding: 10px 14px;
+  border: 1px solid #da291c;
+  background: #fdeceb;
+  color: #da291c;
+  border-radius: 2px;
+}
+
+.stubPanel {
+  padding: 32px 4px;
+  color: #63666a;
+}

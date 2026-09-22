@@ -1,0 +1,20 @@
+.stickyHeader {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+}
+
+.stickyHeader :global(.em-c-header) {
+  margin: 0;
+}
+
+.stickyHeader :global(.em-c-header__title-container) {
+  display: flex;
+  align-items: center;
+  padding-bottom: 0;
+}
+
+.stickyHeader :global(.em-c-header__body) {
+  align-items: center;
+}

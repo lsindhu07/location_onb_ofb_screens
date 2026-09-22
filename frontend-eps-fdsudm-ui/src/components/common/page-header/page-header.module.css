@@ -1,0 +1,27 @@
+.pageHeaderRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+}
+
+.pageHeaderRow :global(.em-c-page-header) {
+  flex: 1;
+}
+
+.page-header-title {
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+  color: #111111;
+}
+
+.page-header-desc {
+  font-size: 13px;
+  line-height: 1.4;
+  color: #63666a;
+  margin-top: 6px;
+  margin-bottom: 0;
+}
